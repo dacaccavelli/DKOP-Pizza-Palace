@@ -21,11 +21,19 @@ pizzas=()
 pizzafile="running-order.txt"
 
 # Initializing the csv
-echo "Size, Crust-Type, Toppings" >> $pizzafile
+echo "Size Crust-Type Toppings" > $pizzafile
 
 # Creating a single pizza hash table.
-declare -A pizzaA
-pizzaA=(["size"]="medium" ["crust"]="thin" ["toppings"]="1")
+#declare -A pizzaA
+#pizzaA=(["size"]="medium" ["crust"]="thin" ["toppings"]="1")
+
+# Testing adding and pulling order
+
+echo "Medium regular pepperoni" >> $pizzafile
+echo "Small thin olives" >> $pizzafile
+echo "Xlarge thick cheese" >> $pizzafile
+echo "Large stuffed onions" >> $pizzafile
+
 
 #-------------------------------------------
 #Testing
@@ -56,14 +64,25 @@ echo "Hello $customername. Thank you for coming to DKOP Pizza Palace!"
 
 # Need to finish the function to display the current order
 function display-current-order {
-echo "needs work"
+counter=0
+while read line; do
+	if [[ "$counter" == '0' ]]; then
+		(( counter ++ ))
+		continue
+	fi
+	size=$(echo $line | cut -f1 -d ' ')
+	crust=$(echo $line | cut -f2 -d ' ')
+	tops=$(echo $line | cut -f3 -d ' ')
+	echo "$counter. $size $crust crust pizza with $tops"
+	(( counter++ ))
+done < $pizzafile
 }
 
 function order-and-options {
 # Listed here are all of the pizzas that have been ordered.
 echo "------------------- Current Order ------------------------"
 echo ""
-
+display-current-order
 echo ""
 echo "----------------------------------------------------------"
 echo "Please selection an option from the list below"

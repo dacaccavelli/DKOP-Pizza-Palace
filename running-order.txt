@@ -1,2 +1,5 @@
-Size, Crust-Type, Toppings
-Size, Crust-Type, Toppings
+Size Crust-Type Toppings
+medium regular pepperoni
+small thin olives
+xlarge thick cheese
+large stuffed onions
