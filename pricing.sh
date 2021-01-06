@@ -54,12 +54,17 @@ echo -e "\e[1;33m
 read -p " Now please select and enter your Pizza size option from the abouve options: " psize
 echo "           "
 case $psize in 
-1)  echo -e "\e[1;31m You have selected Small size pizza. \e[0m";;
-2) echo -e "\e[1;31m You have selected Medium size pizza. \e[0m";;
-3) echo -e "\e[1;31m You have selected Large sie pizza \e[0m";;
-4) echo -e "\e[1;31m You have selected Extra Large pizza \e[0m";;
+1)  echo -e "\e[1;32m You have selected Small size pizza. \e[0m";;
+2) echo -e "\e[1;32m You have selected Medium size pizza. \e[0m";;
+3) echo -e "\e[1;32m You have selected Large sie pizza \e[0m";;
+4) echo -e "\e[1;32m You have selected Extra Large pizza \e[0m";;
 esac
 echo "         "
+
+#____________________________________________________________________________
+
+
+
 #pizza crust type
 #price before tax
 #price after tax
