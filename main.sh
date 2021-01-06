@@ -11,7 +11,7 @@
 #---------------------
 # Script Body
 
-# Clearing the CLI
+# Initial clear
 clear
 
 # Setting up variables for the list of pizzas
@@ -105,6 +105,15 @@ if [ -z ${customername+x} ]; then
 welcoming
 fi
 
+
+#----------------------------------------------------------------
+# Main loop
+while :
+do
+
+# Clearing the CLI
+clear
+
 # Gives the routine each time
 order-and-options
 
@@ -124,7 +133,8 @@ export customername
 case $choice in
 1) echo "this will take you to Keaira's and Omer's files";;
 2) remove-pizza;;
-3) echo "this will take you to Pushpa's file";;
+3)break
+#3) echo "this will take you to Pushpa's file";;
 esac
 
 # Adding order to the csv if the pizza all criteria for the pizza were met.
@@ -135,6 +145,8 @@ fi
 # Will need to have a way to check if the order has been finished
 # (aka finished with Pushpa's file) to stop rerunning the main file.
 
-# MUST DO: change to a while loop (probably) instead of recalling file
-# to prevent  multiple instances opening without closing the prior.
-./main.sh
+done
+
+echo "Thank you for visiting DKOP Pizza Palace"
+echo "Have a good day! Press any key to exit..."
+read
