@@ -11,52 +11,90 @@
 #---------------------
 # Script Body
 
-# Initial clear
+# Initial clearing of terminal
 clear
 
 # Setting up variables for the list of pizzas
 
+<<<<<<< HEAD
 pizza_finished=false
 pizzas=()
 export pizzafile="running-order.txt"
+=======
+export pizza_finished=false
+pizzafile="running-order.txt"
+>>>>>>> Formatted main.sh and added delivery or carryout choice.
 
 #-------------------------------------------
 #Testing
 
-#-----------------------------------------
 
-# Function to welcome the new customer and initialize the pizza file.
+#----------------------------------------------------------------
+# Section 1 : Setting up the following functions:
+
+#	welcoming: Welcomes the user and initializes the pizza file.
+
+#	display-current-order: Reads the pizza file and displays
+#		the pizzas that have been ordered.
+
+# 	order-and-options: Uses the display-current-order function to
+# 		display the current order, as well as the giving the users
+# 		the option to  1) order a new pizza, 2) remove a pizza,
+#		and 3) finish the order.
+
+#	remove-pizza: Displays the current list of pizzas and lets the
+#		user choose one to remove, or cancel the operation.
+
+#	delivery-or-carryout: Lets user choose delivery or carryout
+#		then redirects to the the proper file based on the choice.
+
 
 function welcoming {
-# Welcoming the new customer
-echo "----------------------------------------------------------"
-echo "Welcome to DKOP Pizza Palace! Where dreams become reality!"
-echo "----------------------------------------------------------"
+# Function to welcome the new customer and initialize the pizza file.
 
-read -p "What is your name? " customername
-echo "Hello $customername. Thank you for coming to DKOP Pizza Palace!"
+	# Welcoming the new customer
+	echo "----------------------------------------------------------"
+	echo "Welcome to DKOP Pizza Palace! Where dreams become reality!"
+	echo "----------------------------------------------------------"
 
-# Initializing the table with column headers
-echo "Size Crust-Type Toppings" > $pizzafile
-# Testing adding to order
-echo "Medium regular pepperoni" >> $pizzafile
-echo "Small thin olives" >> $pizzafile
-echo "Xlarge thick cheese" >> $pizzafile
-echo "Large stuffed onions" >> $pizzafile
+	read -p "What is your name? " customername
+	echo "Hello $customername. Thank you for coming to DKOP Pizza Palace!"
 
+	# Initializing the table with column headers
+	echo "Size Crust-Type Toppings" > $pizzafile
+
+	# Preloading the order for testing
+	echo "Medium regular pepperoni" >> $pizzafile
+	echo "Small thin olives" >> $pizzafile
+	echo "Xlarge thick cheese" >> $pizzafile
+	echo "Large stuffed onions" >> $pizzafile
+
+	# Exporting the customername for the other files.
+	export customername
 }
 
-# Function to read the file containing the current order
 
 function display-current-order {
-echo "------------------- Current Order ------------------------"
-echo ""
-counter=0
-while read line; do
-	if [[ "$counter" == '0' ]]; then
-		(( counter ++ ))
-		continue
+# Function to read the file containing the current order
+
+	echo "------------------- Current Order ------------------------"
+	echo ""
+	counter=0
+	while read line; do
+		if [[ "$counter" == '0' ]]; then
+			(( counter ++ ))
+			continue
+		fi
+		size=$(echo $line | cut -f1 -d ' ')
+		crust=$(echo $line | cut -f2 -d ' ')
+		tops=$(echo $line | cut -f3 -d ' ')
+		echo "$counter. $size, $crust crust pizza with $tops"
+		(( counter++ ))
+	done < $pizzafile
+	if [[ "$counter" == '1' ]]; then
+		echo "The order is currently empty"
 	fi
+<<<<<<< HEAD
 	size=$(echo $line | cut -f1 -d ' ')
 	crust=$(echo $line | cut -f2 -d ' ')
 	tops=$(echo $line | cut -f3 -d ' ')
@@ -66,39 +104,80 @@ done < $pizzafile
 echo ""
 
 echo "----------------------------------------------------------"
+=======
+	echo ""
+	echo "----------------------------------------------------------"
+>>>>>>> Formatted main.sh and added delivery or carryout choice.
 }
 
-# Function to display the current order and the main options.
 
 function order-and-options {
-# Listed here are all of the pizzas that have been ordered.
-display-current-order
-echo "Please select an option from the list below"
-echo "by using the corresponding number:"
-echo "-----------------------------------------------"
-echo "To order a new pizza, enter 1."
-echo "To remove a pizza from the order, enter 2."
-echo "To finish your order, enter 3."
-read -p "Enter your choice..." choice
+# Function to display the current order and the main options.
+
+	# Calls function to display running order.
+	display-current-order
+
+	echo "$customername, please select an option from the"
+	echo "list below by using the corresponding number:"
+	echo "-----------------------------------------------"
+	echo "To order a new pizza, enter 1."
+	echo "To remove a pizza from the order, enter 2."
+	echo "To finish your order, enter 3."
+	read -p "Enter your choice..." choice
 }
+<<<<<<< HEAD
 # Function to allow the user to remove a pizza from the list.
+=======
+
+>>>>>>> Formatted main.sh and added delivery or carryout choice.
 
 function remove-pizza {
-clear
-echo "Removing a pizza..."
-echo "-------------------"
-display-current-order
-read -p "Choose pizza to remove (or select '0' to cancel):" choice
-if [ "$choice" -ne '0' ]; then
-	((choice++))
-	sed -i -e "${choice}d" $pizzafile
-fi
+# Function to allow the user to remove a pizza from the list.
+
+	# Clears the CLI
+	clear
+	# Adds current order and option to remove a pizza
+	echo "------------------ Removing a pizza ----------------------"
+	display-current-order
+	read -p "Choose pizza to remove (or select '0' to cancel):" choice
+
+	# Removes the specific pizza from the file. Does nothing if '0'.
+	if [ "$choice" -ne '0' ]; then
+		((choice++))
+		sed -i -e "${choice}d" $pizzafile
+	fi
+}
+
+
+function delivery-or-carryout {
+# Function to either direct the user directly to the pricing, or 
+# to delivery.sh to collect their contact information.
+
+	#Clears and shows current order
+	clear
+	display-current-order
+
+	# Prompts user to choose between delivery or carryout.
+	echo "$customername, will your order be delivery or carryout?"
+	echo "-----------------------------------------------"
+	echo "To choose delivery, enter 1."
+	echo "To choose carryout, enter 2."
+	read -p "Enter your choice..." choice
+
+	# Switch betwen delivery form for user info or just pricing.
+	case $choice in
+	1) echo "redirect to delivery form, then to pricing";;
+	#1)./delivery.sh;;
+	esac
+
+	#Calls pricing.sh to get final totals.
+	#./pricing.sh
 }
 
 
 #----------------------------------------------------------------
-# Section __ : Prompting the user for their name if not known
-# and giving them their current order and the list of options.
+# Section 2 : Prompting the user for their name if not known
+# 	and giving them their current order and the list of options.
 
 # Only prompts on the initial run
 if [ -z ${customername+x} ]; then
@@ -107,46 +186,46 @@ fi
 
 
 #----------------------------------------------------------------
-# Main loop
+# Section 3: Main loop where the user will be continuously
+# 	prompted for what option they would like to perform.
+
+# Start of the main loop
 while :
 do
 
-# Clearing the CLI
-clear
+	# Clearing the CLI
+	clear
 
-# Gives the routine each time
-order-and-options
+	# Gives the user the current order and options.
+	order-and-options
 
-#----------------------------------------------------------------
+	#Switch case for selecting what the user wants to do.
+	case $choice in
+	1) echo "this will take you to the size and toppings files";;
+	2) remove-pizza;;
+	3) delivery-or-carryout;;
+	#3) echo "this will take you to delivery/checkout choice and pricing file";;
+	esac
 
-# Exporting the variables for the other scripts to use
-export pizza_finished
-export customername
+	# Adding the new pizza if all criteria for the pizza were met
+	# (size, crust, and toppings).
+	# pizza_finished is updated in toppings.sh if necessary.
+	if [ "$pizza_finished" ] ; then
+		echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
+		$pizza_finished=false
+	fi
 
-# Calling the pizza script for the crust sizes and types.
-
-#1) need to add Keaira's sizes file which will redirect to Omer's toppings file
-#./sizes.sh
-#./topping.sh;;
-#2)finished and working
-
-case $choice in
-1) echo "this will take you to Keaira's and Omer's files";;
-2) remove-pizza;;
-3)break
-#3) echo "this will take you to Pushpa's file";;
-esac
-
-# Adding order to the csv if the pizza all criteria for the pizza were met.
-if [ "$pizza_finished" = true ] ; then
-	echo "$pizza_size, $pizza_crust, $pizza_toppings" >> $pizzafile
-fi
-
-# Will need to have a way to check if the order has been finished
-# (aka finished with Pushpa's file) to stop rerunning the main file.
+	# Will need to have a way to check if the order has been finished
+	# (aka finished with Pushpa's file) to stop rerunning the main file.
 
 done
+# End of the main loop
 
+
+#----------------------------------------------------------------
+# Section 4: Closing statements and cleanup of the created file.
+
+rm $pizzafile
 echo "Thank you for visiting DKOP Pizza Palace"
 echo "Have a good day! Press any key to exit..."
 read
