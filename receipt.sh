@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./main.sh
+source ./main.sh --source-only
 
 customername=Daniel
 date=$( date +"%x" | sed 's/\//\_/g'  )

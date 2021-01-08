@@ -8,6 +8,7 @@
 Size Crust-Type Toppings
 Medium regular pepperoni
 <<<<<<< HEAD
+<<<<<<< HEAD
 Small thin olives
 Xlarge thick cheese
 Large stuffed onions
@@ -15,3 +16,8 @@ Large stuffed onions
 >>>>>>> Formatted main.sh and added delivery or carryout choice.
 =======
 >>>>>>> Basic Structure of receipt.sh and just created main function in main.sh.
+=======
+Small thin olives
+Xlarge thick cheese
+Large stuffed onions
+>>>>>>> Fixed main to run on its own and lets receipt.sh access its functions.

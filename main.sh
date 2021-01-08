@@ -234,4 +234,6 @@ read
 }
 
 #Calling the main function
-#main
+if [ "${1}" != "--source-only" ]; then
+	main
+fi
