@@ -11,6 +11,8 @@
 #---------------------
 # Script Body
 
+#source ./receipt.sh
+
 # Initial clearing of terminal
 clear
 
@@ -49,7 +51,7 @@ pizzafile="running-order.txt"
 #		then redirects to the the proper file based on the choice.
 
 
-function welcoming {
+welcoming() {
 # Function to welcome the new customer and initialize the pizza file.
 
 	# Welcoming the new customer
@@ -74,7 +76,7 @@ function welcoming {
 }
 
 
-function display-current-order {
+display-current-order() {
 # Function to read the file containing the current order
 
 	echo "------------------- Current Order ------------------------"
@@ -111,7 +113,7 @@ echo "----------------------------------------------------------"
 }
 
 
-function order-and-options {
+order-and-options() {
 # Function to display the current order and the main options.
 
 	# Calls function to display running order.
@@ -131,7 +133,7 @@ function order-and-options {
 
 >>>>>>> Formatted main.sh and added delivery or carryout choice.
 
-function remove-pizza {
+remove-pizza() {
 # Function to allow the user to remove a pizza from the list.
 
 	# Clears the CLI
@@ -149,7 +151,7 @@ function remove-pizza {
 }
 
 
-function delivery-or-carryout {
+delivery-or-carryout() {
 # Function to either direct the user directly to the pricing, or 
 # to delivery.sh to collect their contact information.
 
@@ -175,6 +177,8 @@ function delivery-or-carryout {
 }
 
 
+main() {
+# Includes the welcoming and the main loop.
 #----------------------------------------------------------------
 # Section 2 : Prompting the user for their name if not known
 # 	and giving them their current order and the list of options.
@@ -183,7 +187,6 @@ function delivery-or-carryout {
 if [ -z ${customername+x} ]; then
 welcoming
 fi
-
 
 #----------------------------------------------------------------
 # Section 3: Main loop where the user will be continuously
@@ -210,7 +213,7 @@ do
 	# Adding the new pizza if all criteria for the pizza were met
 	# (size, crust, and toppings).
 	# pizza_finished is updated in toppings.sh if necessary.
-	if [ "$pizza_finished" ] ; then
+	if [ "$pizza_finished" == 'true' ] ; then
 		echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
 		$pizza_finished=false
 	fi
@@ -221,7 +224,6 @@ do
 done
 # End of the main loop
 
-
 #----------------------------------------------------------------
 # Section 4: Closing statements and cleanup of the created file.
 
@@ -229,3 +231,7 @@ rm $pizzafile
 echo "Thank you for visiting DKOP Pizza Palace"
 echo "Have a good day! Press any key to exit..."
 read
+}
+
+#Calling the main function
+#main
