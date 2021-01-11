@@ -27,8 +27,14 @@ for size in ${size_arr[@]}; do
 done
 
 read -p "Choose your size: " choice
-if [ "$choice" == "0" ]; then exit; fi
-size=${size_arr[$choice-1]}
+
+case "$choice" in
+0) exit;;
+1 | 2 | 3 | 4) size=${size_arr[$choice-1]};;
+*) 	echo "Answer not recognized."
+	size_prompt
+	;;
+esac
 }
 
 crust_prompt() {
@@ -44,8 +50,14 @@ for crust in ${crust_arr[@]}; do
 done
 
 read -p "Choose your crust: " choice
-if [ "$choice" == "0" ]; then exit; fi
-crust=${crust_arr[$choice-1]}
+
+case "$choice" in
+0) exit;;
+1 | 2 | 3 | 4) crust=${crust_arr[$choice-1]};;
+*) 	echo "Answer not recognized."
+	crust_prompt
+	;;
+esac
 }
 
 clear
