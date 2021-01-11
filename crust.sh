@@ -11,63 +11,84 @@
 #---------------------
 # Script Body
 
+# Initializing arrays for sizes and crusts.
 size_arr=( Small Medium Large X-Large)
 crust_arr=( Thin Regular Thick Stuffed)
 
 size_prompt() {
+# Function to prompt size choice and store the result.
 
-echo "Please select a size from the list by using"
-echo "the corresponding number. Enter zero (0) to"
-echo "return to the previous menu."
+	# Text prompt for the user.
+	echo "Please select a size from the list by using"
+	echo "the corresponding number. Enter zero (0) to"
+	echo "return to the previous menu."
 
-counter=1
-for size in ${size_arr[@]}; do
-	echo "$counter. $size"
-	((counter++))
-done
+	# Displays the size with the matching choice number.
+	counter=1
+	for size in ${size_arr[@]}; do
+		echo "$counter. $size"
+		((counter++))
+	done
 
-read -p "Choose your size: " choice
-
-case "$choice" in
-0) exit;;
-1 | 2 | 3 | 4) size=${size_arr[$choice-1]};;
-*) 	echo "Answer not recognized."
-	size_prompt
-	;;
-esac
+	# Uses switch case to store the user's choice,
+	# exit if the user wants to cancel, or catch errors
+	# and reprompt.
+	read -p "Choose your size: " choice
+	case "$choice" in
+	0) exit;;
+	1 | 2 | 3 | 4) size=${size_arr[$choice-1]};;
+	*) 	echo "Answer not recognized."
+		size_prompt
+		;;
+	esac
 }
 
 crust_prompt() {
+# Function to prompt pizza crust choice and store the result.
 
-echo "Please select a crust type from the list by"
-echo "using the corresponding number. Enter zero (0)"
-echo "to return to the previous menu."
+	# Initial prompt with user instructions
+	echo "Please select a crust type from the list by"
+	echo "using the corresponding number. Enter zero (0)"
+	echo "to return to the previous menu."
 
-counter=1
-for crust in ${crust_arr[@]}; do
-	echo "$counter. $crust"
-	((counter++))
-done
+	# Displays the options for the crusts.
+	counter=1
+	for crust in ${crust_arr[@]}; do
+		echo "$counter. $crust"
+		((counter++))
+	done
 
-read -p "Choose your crust: " choice
-
-case "$choice" in
-0) exit;;
-1 | 2 | 3 | 4) crust=${crust_arr[$choice-1]};;
-*) 	echo "Answer not recognized."
-	crust_prompt
-	;;
-esac
+	# Uses switch case to store the user's choice,
+	# exit if the user wants to cancel, or catch errors
+	# and reprompt.
+	read -p "Choose your crust: " choice
+	case "$choice" in
+	0) exit;;
+	1 | 2 | 3 | 4) crust=${crust_arr[$choice-1]};;
+	*) 	echo "Answer not recognized."
+		crust_prompt
+		;;
+	esac
 }
 
+# Clears the CLI.
 clear
 
+# Prompts user to choose the size of the pizza
+# and prints their choice.
 size_prompt
 echo "You chose $size"
 
+# Prompt user to choose their pizza crust
+# and prints their choice
 crust_prompt
 echo "You chose $crust"
 
+# Creating a file and storing the local variables in there
+# because bash does not have a better way to pass to a
+# parent process.
+# File gets deleted in main.sh after adding the pizza
+# to the running total.
 touch $temppizza
 echo $size $crust < $temppizza
 chmod 444 $temppizza

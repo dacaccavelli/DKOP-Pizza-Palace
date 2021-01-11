@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# sourcing functions from main.sh without actually running the file
 source ./main.sh --source-only
 
 customername=Daniel
@@ -20,7 +22,7 @@ echo "|                    $day at $time                            |"
 
 echo "---------------------------------------------------------------"
 
-
+# Using the function from main.sh to output the current order.
 display-current-order
 
 # NEED SUBTOTAL AMOUNT, TAX AMOUNT, AND TOTAL HERE
