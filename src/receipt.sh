@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # sourcing functions from main.sh without actually running the file
-source ./main.sh --source-only
+source ./src/main.sh --source-only
 
 customername=Daniel
 date=$( date +"%x" | sed 's/\//\_/g'  )
@@ -16,7 +16,7 @@ echo "---------------------------------------------------------------"
 echo "|                      DKOP-Pizza-Palace                      |"
 echo "|                       191 Fayette St.                       |"
 echo "|                   Martinsville, VA 24112                    |"
-echo "|                    $day at $time                            |"
+echo "|                    $day at $time                |"
 
 # ADD ECHO FOR DELIVERY OR TAKEOUT
 

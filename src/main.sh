@@ -4,9 +4,6 @@
 # Author: Daniel Caccavelli
 # Date: 12/29/2020
 
-#New text here.
-# Forgot to add this line.
-
 # Description: The purpose of this script is to 
 # compile the other shell files for ordering from
 # our pizza place.
@@ -87,7 +84,7 @@ display-current-order() {
 # Function to read the file containing the current order
 
 	echo "------------------- Current Order ------------------------"
-	echo ""
+	echo "|                                                        |"
 	counter=0
 	while read line; do
 		if [[ "$counter" == '0' ]]; then
