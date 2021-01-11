@@ -18,7 +18,7 @@ clear
 
 pizza_finished=false
 pizzas=()
-pizzafile="running-order.txt"
+export pizzafile="running-order.txt"
 
 #-------------------------------------------
 #Testing
@@ -64,6 +64,7 @@ while read line; do
 	(( counter++ ))
 done < $pizzafile
 echo ""
+
 echo "----------------------------------------------------------"
 }
 
@@ -80,7 +81,6 @@ echo "To remove a pizza from the order, enter 2."
 echo "To finish your order, enter 3."
 read -p "Enter your choice..." choice
 }
-
 # Function to allow the user to remove a pizza from the list.
 
 function remove-pizza {
