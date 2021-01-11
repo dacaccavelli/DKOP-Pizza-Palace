@@ -28,7 +28,11 @@ export pizzafile="running-order.txt"
 =======
 export pizza_finished=false
 pizzafile="running-order.txt"
+<<<<<<< HEAD
 >>>>>>> Formatted main.sh and added delivery or carryout choice.
+=======
+export temppizza="temp-pizza.txt"
+>>>>>>> Added size file which creates and uses temp-pizza.txt to transfer variables between processes.
 
 #-------------------------------------------
 #Testing
@@ -207,7 +211,8 @@ do
 
 	#Switch case for selecting what the user wants to do.
 	case $choice in
-	1) echo "this will take you to the size and toppings files";;
+	#1) echo "this will take you to the size and toppings files";;
+	1) ./crust.sh;;
 	2) remove-pizza;;
 	3) delivery-or-carryout;;
 	#3) echo "this will take you to delivery/checkout choice and pricing file";;
@@ -220,6 +225,10 @@ do
 		echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
 		$pizza_finished=false
 	fi
+
+	# Need to delete temp file after getting the information from it.
+	chmod 644 $temppizza
+	rm $temppizza
 
 	# Will need to have a way to check if the order has been finished
 	# (aka finished with Pushpa's file) to stop rerunning the main file.
