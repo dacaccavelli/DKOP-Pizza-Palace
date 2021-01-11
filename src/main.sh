@@ -14,7 +14,7 @@
 #---------------------
 # Script Body
 
-#source ./receipt.sh
+#source ./src/receipt.sh
 
 # Initial clearing of terminal
 clear
@@ -176,11 +176,11 @@ delivery-or-carryout() {
 	# Switch betwen delivery form for user info or just pricing.
 	case $choice in
 	1) echo "redirect to delivery form, then to pricing";;
-	#1)./delivery.sh;;
+	#1)./src/delivery.sh;;
 	esac
 
 	#Calls pricing.sh to get final totals.
-	#./pricing.sh
+	#./src/pricing.sh
 }
 
 
@@ -212,7 +212,7 @@ do
 	#Switch case for selecting what the user wants to do.
 	case $choice in
 	#1) echo "this will take you to the size and toppings files";;
-	1) ./crust.sh;;
+	1) ./src/crust.sh;;
 	2) remove-pizza;;
 	3) delivery-or-carryout;;
 	#3) echo "this will take you to delivery/checkout choice and pricing file";;

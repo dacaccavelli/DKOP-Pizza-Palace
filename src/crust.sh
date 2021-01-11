@@ -14,6 +14,7 @@
 # Initializing arrays for sizes and crusts.
 size_arr=( Small Medium Large X-Large)
 crust_arr=( Thin Regular Thick Stuffed)
+order_correct=false
 
 size_prompt() {
 # Function to prompt size choice and store the result.
@@ -71,19 +72,47 @@ crust_prompt() {
 	esac
 }
 
+user_prompts() {
+# Function to run both prompts and print the results.
+
+	# Prompts user to choose the size of the pizza
+	# and prints their choice.
+	size_prompt
+	echo "You chose $size"
+
+	# Prompt user to choose their pizza crust
+	# and prints their choice
+	crust_prompt
+	echo "You chose $crust"
+}
+
+confirmation() {
+
+	read -p "You chose a $size, $crust crust pizza. Is this correct? (y/n): " choice
+	case $choice in
+	"yes" | "y") 	clear
+			order_correct=true
+			echo "Great! Now let's select the toppings."
+			;;
+	"no" | "n")	clear
+			echo "Let's try again...";;
+	*) 		clear
+			echo "Sorry, I did not understand..."
+			confirmation;;
+	esac
+
+}
 # Clears the CLI.
 clear
 
-# Prompts user to choose the size of the pizza
-# and prints their choice.
-size_prompt
-echo "You chose $size"
+while :; do
+user_prompts
 
-# Prompt user to choose their pizza crust
-# and prints their choice
-crust_prompt
-echo "You chose $crust"
+confirmation
 
+[ "$order_correct" == "true" ] && break
+
+done
 # Creating a file and storing the local variables in there
 # because bash does not have a better way to pass to a
 # parent process.
