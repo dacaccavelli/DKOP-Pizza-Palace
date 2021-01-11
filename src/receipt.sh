@@ -6,7 +6,7 @@ source ./src/main.sh --source-only
 customername=Daniel
 date=$( date +"%x" | sed 's/\//\_/g'  )
 
-receipt="$customername-$date-receipt.txt"
+receipt="receipts/$customername-$date-receipt.txt"
 touch $receipt
 
 day=$( date +"%x" )
