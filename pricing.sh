@@ -1,87 +1,73 @@
 #!/bin/bash
 
-#-------------------------
-#Author: Pushpa
-#Date: 12/29/2020
+size_price=(1.00 2.00 3.00 4.00)
+crust=(0.50 1.00 2.00)
+GrandTotal=0
 
-clear
-echo -e "\e[1;31m         ----------PIZZA CRUST-OPTIONS----------------                                 
-  \e[0m"
+pizzafile="running-order.txt"
 
-echo -e "\e[1;33m 
-1. Thin crust pizza
-2. Thick crust pizza
-3. Regular pizza
-4. Handcrafted Specialty pizza
-\e[0m"
+#--------------------------------size-----------------
+counter=0
+while read line; do
+          if [[ "$counter" == '0' ]]; then
+            (( counter ++))
+             continue
+          fi
+           sz=$(echo $line | cut -f1 -d ' ')
+           crt=$(echo $line | cut -f2 -d ' ')
+           tps=$(echo $line | cut -f3 -d ' ')
+echo "$sz $crt $tps "
+if [[ "$sz" == "Small" ]]; then
+ pizza_size_price=${size_price[0]}
 
+elif [[ "$sz" == "Medium" ]]; then
+pizza_size_price=${size_price[1]}
 
-read -p " Please select and enter your Pizza type option from the abouve options: " ptype
-case $ptype in
-1) echo -e "\e[1;32m You have selected option $ptype \e[0m"
-echo "The price for Small Pizza is USD 8.99
-The price for Medium Pizza is USD 10.99
-The price for Large Pizza is USD 12.99
-The price for Extra Large Pizza is USD 13.99";;
-2)echo "               "
- echo -e "\e[1;32m You have selected option $ptype \e[0m"
-echo "               "
-echo "The price for Small Pizza is USD 7.99
-The price for Medium Pizza is USD 9.99
-The price for Large Pizza is USD 11.99
-The price for Extra Large Pizza is USD 12.99";;
-3) echo -e "\e[1;32m You have selected option $ptype \e[0m"
-echo "The price for Small Pizza is USD 6.99
-The price for Medium Pizza is USD 8.99
-The price for Large Pizza is USD 10.99
-The price for Extra Large Pizza is USD 12.99";;
-4) echo -e "\e[1;32m You have selected option $ptype \e[0m"
-echo "The price for Small Pizza is USD 8.99
-The price for Medium Pizza is USD 10.99
-The price for Large Pizza is USD 12.99
-The price for Extra Large Pizza is USD 13.99";;
-esac
-echo "               "
-echo -e "\e[1;31m         -------------PIZZA SIZE OPTIONS---------------           \e[0m"
+elif [[ "$sz" == "Large" ]]; then
+pizza_size_price=${size_price[2]}
 
-echo -e "\e[1;33m 
-1. Small
-2. Medium
-3. Large
-4. Extra Large
- \e[0m"
+elif
+ [[ "$sz" == "Xlarge" ]]; then
+pizza_size_price=${size_price[3]}
 
-read -p " Now please select and enter your Pizza size option from the abouve options: " psize
-echo "           "
-case $psize in 
-1)  echo -e "\e[1;31m You have selected Small size pizza. \e[0m";;
-2) echo -e "\e[1;31m You have selected Medium size pizza. \e[0m";;
-3) echo -e "\e[1;31m You have selected Large sie pizza \e[0m";;
-4) echo -e "\e[1;31m You have selected Extra Large pizza \e[0m";;
-esac
-echo "         "
-#pizza crust type
-#price before tax
-#price after tax
+fi
+echo "$pizza_size_price"
+#--------------------------toppings price------------
+if [[ "$tps" == "pepperoni" ]]; then
+tp=1.00
 
+elif [[ "$tps" == "olives" ]]; then
+tp=1.00
 
+elif [[ "$tps" == "onions" ]]; then
+tp=1.00
 
+fi
+echo "$tp"
+#--------------------------crust price---------------
 
+if [[ "$crt" == "regular" ]]; then
+crust_price=${crust[0]}
 
+elif [[ "$crt" == "thin" ]]; then
+crust_price=${crust[1]}
 
+elif [[ "$crt" == "stuffed" ]]; then
+crust_price=${crust[2]}
+fi
+echo "$crust_price"
+total=$(echo "scale=2; $pizza_size_price+$tp+$crust_price" | bc)
+GrandTotal=$(echo "scale=2; $GrandTotal+$total" | bc)
+echo " "
+echo  -e "\e[1;32m The total will be: $total \e[0m"
 
+echo " "
+        (( counter++ ))
+done < $pizzafile
+
+Tax=$(echo "scale=2; ($total*0.025)" | bc)
+echo  -e "\e[1;32m The Tax will be: $Tax \e[0m"
+echo  -e "\e[1;32m The Grand Total will be: $GrandTotal \e[0m"
 
 
-
-
-#read -p " Please Choose Your Pizza Size:" Size
-#echo "You have selected $Size size Pizza"
-#case $Size in
-#Small)echo  "The Price for $Size size Pizza will be USD 8.99";;
-#Medium) echo "The price for $Size size Pizza will be USD 10.99";;
-#Large) echo  "The price for $Size size Pizza will be USD 12.99";;
-#Extra_Large) echo "The price for $Size size Pizza will be USD 14.99";;
-#Thin_Crust) echo  "The price for $Size size Pizza will be USD 11.99";;
-#Large_Stuffed) echo  "The price for $Size size Pizza will be USD 13.99";;
-#esac
 
