@@ -18,21 +18,14 @@ clear
 
 # Setting up variables for the list of pizzas
 
-<<<<<<< HEAD
-pizza_finished=false
-pizzas=()
-export pizzafile="running-order.txt"
-=======
+mkdir tmp
+export pizzafile="tmp/running-order.txt"
 export pizza_finished=false
-pizzafile="running-order.txt"
-<<<<<<< HEAD
->>>>>>> Formatted main.sh and added delivery or carryout choice.
-=======
-export temppizza="temp-pizza.txt"
->>>>>>> Added size file which creates and uses temp-pizza.txt to transfer variables between processes.
+export temppizza="tmp/temp-pizza.txt"
 
 #-------------------------------------------
 #Testing
+
 
 
 #----------------------------------------------------------------
@@ -100,20 +93,8 @@ display-current-order() {
 	if [[ "$counter" == '1' ]]; then
 		echo "The order is currently empty"
 	fi
-<<<<<<< HEAD
-	size=$(echo $line | cut -f1 -d ' ')
-	crust=$(echo $line | cut -f2 -d ' ')
-	tops=$(echo $line | cut -f3 -d ' ')
-	echo "$counter. $size, $crust crust pizza with $tops"
-	(( counter++ ))
-done < $pizzafile
-echo ""
-
-echo "----------------------------------------------------------"
-=======
 	echo ""
 	echo "----------------------------------------------------------"
->>>>>>> Formatted main.sh and added delivery or carryout choice.
 }
 
 
@@ -131,11 +112,6 @@ order-and-options() {
 	echo "To finish your order, enter 3."
 	read -p "Enter your choice..." choice
 }
-<<<<<<< HEAD
-# Function to allow the user to remove a pizza from the list.
-=======
-
->>>>>>> Formatted main.sh and added delivery or carryout choice.
 
 remove-pizza() {
 # Function to allow the user to remove a pizza from the list.
@@ -177,7 +153,7 @@ delivery-or-carryout() {
 	esac
 
 	#Calls pricing.sh to get final totals.
-	#./src/pricing.sh
+	./src/pricing.sh
 }
 
 
@@ -187,59 +163,59 @@ main() {
 # Section 2 : Prompting the user for their name if not known
 # 	and giving them their current order and the list of options.
 
-# Only prompts on the initial run
-if [ -z ${customername+x} ]; then
-welcoming
-fi
-
-#----------------------------------------------------------------
-# Section 3: Main loop where the user will be continuously
-# 	prompted for what option they would like to perform.
-
-# Start of the main loop
-while :
-do
-
-	# Clearing the CLI
-	clear
-
-	# Gives the user the current order and options.
-	order-and-options
-
-	#Switch case for selecting what the user wants to do.
-	case $choice in
-	#1) echo "this will take you to the size and toppings files";;
-	1) ./src/crust.sh;;
-	2) remove-pizza;;
-	3) delivery-or-carryout;;
-	#3) echo "this will take you to delivery/checkout choice and pricing file";;
-	esac
-
-	# Adding the new pizza if all criteria for the pizza were met
-	# (size, crust, and toppings).
-	# pizza_finished is updated in toppings.sh if necessary.
-	if [ "$pizza_finished" == 'true' ] ; then
-		echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
-		$pizza_finished=false
+	# Only prompts on the initial run
+	if [ -z ${customername+x} ]; then
+	welcoming
 	fi
 
-	# Need to delete temp file after getting the information from it.
-	chmod 644 $temppizza
-	rm $temppizza
+	#----------------------------------------------------------------
+	# Section 3: Main loop where the user will be continuously
+	# 	prompted for what option they would like to perform.
 
-	# Will need to have a way to check if the order has been finished
-	# (aka finished with Pushpa's file) to stop rerunning the main file.
+	# Start of the main loop
+	while :
+	do
 
-done
-# End of the main loop
+		# Clearing the CLI
+		clear
 
-#----------------------------------------------------------------
-# Section 4: Closing statements and cleanup of the created file.
+		# Gives the user the current order and options.
+		order-and-options
 
-rm $pizzafile
-echo "Thank you for visiting DKOP Pizza Palace"
-echo "Have a good day! Press any key to exit..."
-read
+		#Switch case for selecting what the user wants to do.
+		case $choice in
+		#1) echo "this will take you to the size and toppings files";;
+		1) ./src/crust.sh;;
+		2) remove-pizza;;
+		3) delivery-or-carryout;;
+		#3) echo "this will take you to delivery/checkout choice and pricing file";;
+		esac
+
+		# Adding the new pizza if all criteria for the pizza were met
+		# (size, crust, and toppings).
+		# pizza_finished is updated in toppings.sh if necessary.
+		if [ "$pizza_finished" == 'true' ] ; then
+			echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
+			$pizza_finished=false
+		fi
+
+		# Need to delete temp file after getting the information from it.
+		read
+		rm $temppizza
+
+		# Will need to have a way to check if the order has been finished
+		# (aka finished with Pushpa's file) to stop rerunning the main file.
+
+	done
+	# End of the main loop
+
+	#----------------------------------------------------------------
+	# Section 4: Closing statements and cleanup of the created file.
+
+	rm $pizzafile
+	echo "Thank you for visiting DKOP Pizza Palace"
+	echo "Have a good day! Press any key to exit..."
+	read
 }
 
 #Calling the main function

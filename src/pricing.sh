@@ -4,7 +4,16 @@ size_price=(1.00 2.00 3.00 4.00)
 crust=(0.50 1.00 2.00)
 GrandTotal=0
 
-pizzafile="running-order.txt"
+calculate-pizza $size $crust $num-topps
+calculate-pizza() {
+
+#size crust number-of-toppings
+echo "$1 $2 $3"
+sz=$1
+cst=$2
+
+}
+
 
 #--------------------------------size-----------------
 counter=0

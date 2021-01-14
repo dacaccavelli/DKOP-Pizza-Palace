@@ -83,7 +83,6 @@ user_prompts() {
 	# Prompt user to choose their pizza crust
 	# and prints their choice
 	crust_prompt
-	echo "You chose $crust"
 }
 
 confirmation() {
@@ -106,6 +105,7 @@ confirmation() {
 clear
 
 while :; do
+
 user_prompts
 
 confirmation
@@ -120,5 +120,5 @@ done
 # to the running total.
 touch $temppizza
 echo $size $crust < $temppizza
-chmod 444 $temppizza
+
 
