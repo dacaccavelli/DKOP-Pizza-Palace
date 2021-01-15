@@ -41,7 +41,6 @@ echo ""
 echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
 \e[0m"
 echo ""
-echo ""
  IFS=' '
  #here-string
  read -a numarr <<< "$selection"
