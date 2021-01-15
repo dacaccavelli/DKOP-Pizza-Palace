@@ -12,40 +12,54 @@ echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
 \e[0m"
 echo ""
 
-toppings=(TOMATOES ONION PEPPERONI CHEESE MUSHROOM JALAPENO OLIVES CUCUMBER SAUSAGE CHICKEN SPINACH)
+pizzaToppings=(TOMATOES ONION PEPPERONI CHEESE MUSHROOM JALAPENO OLIVES CUCUMBE>
 counter=1
-for t in ${toppings[@]}
+for t in ${pizzaToppings[@]}
 do
 echo "$counter  $t"
 ((counter++))
 done
 echo ""
+dupe_flag=false
+topp_arr=()
+add-topping() {
 
-read -p "Please add 1st topping [1-11] >> " selection
+         #if there are duplicate numbers
+         for j in "${topp_arr[@]}" ; do
+                 if [ "$1" -eq "$j" ]; then
+                         dupe_flag=true
+                 fi
+         done
+         if [ "$dupe_flag" != "true" ]; then
+                 topp_arr+=($1)
+         fi
+ }
+
+read -p "Please Enter multiple Toppings numbers separated by space: " selection
 echo ""
 echo ""
 echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
 \e[0m"
 echo ""
-echo "${toppings[$selection-1]}"
 echo ""
-echo "--------------------------------------------------"
-echo ""
- 
-y=1
-n=2
-yes=yes
-no=no
-read -p "Do you Want yo add more toppings? (yes or no)  >> "
-while [ $1 -e $yes ]
-do
-read -p "Please add 2nd topping [1-11] >> " selection2
+ IFS=' '
+ #here-string
+ read -a numarr <<< "$selection"
+ for i in "${numarr[@]}" ; do
+
+# if something is not in the array (either number too big, or not an integer)
+         (( i-- ))
+         case "$i" in
+         [0-9] | 1[0-1]) add-topping $i;;
+         *) echo "Entry $i is not recognized";;
+         esac
+         dupe_flag=false
+ done
+selectedTopp=()
+
+for i in "${topp_arr[@]}" ; do
+echo "${pizzaToppings[$i]}"
+selectedTopp+=("${pizzaToppings[$i]}")
 done
+echo "${selectedTopp[@]}"
 
-echo ""
-echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
-\e[0m"
-
-echo ""
-echo "${toppings[$selection2-1]}" 
-echo ""
