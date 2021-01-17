@@ -18,9 +18,11 @@ clear
 
 # Setting up variables for the list of pizzas
 
-mkdir tmp
+if [ ! -d tmp ]; then 
+	mkdir tmp
+fi
+
 export pizzafile="tmp/running-order.txt"
-export pizza_finished=false
 export temppizza="tmp/temp-pizza.txt"
 
 #-------------------------------------------
@@ -63,10 +65,10 @@ welcoming() {
 	echo "Size Crust-Type Toppings" > $pizzafile
 
 	# Preloading the order for testing
-	echo "Medium regular pepperoni" >> $pizzafile
-	echo "Small thin olives" >> $pizzafile
-	echo "Xlarge thick cheese" >> $pizzafile
-	echo "Large stuffed onions" >> $pizzafile
+	echo "Medium regular :pepperoni" >> $pizzafile
+	echo "Small thin :olives" >> $pizzafile
+	echo "Xlarge thick :cheese" >> $pizzafile
+	echo "Large stuffed :onions" >> $pizzafile
 
 	# Exporting the customername for the other files.
 	export customername
@@ -86,7 +88,7 @@ display-current-order() {
 		fi
 		size=$(echo $line | cut -f1 -d ' ')
 		crust=$(echo $line | cut -f2 -d ' ')
-		tops=$(echo $line | cut -f3 -d ' ')
+		tops=$(echo $line | cut -f2 -d ':')
 		echo "$counter. $size, $crust crust pizza with $tops"
 		(( counter++ ))
 	done < $pizzafile
@@ -192,15 +194,18 @@ main() {
 		esac
 
 		# Adding the new pizza if all criteria for the pizza were met
-		# (size, crust, and toppings).
-		# pizza_finished is updated in toppings.sh if necessary.
-		if [ "$pizza_finished" == 'true' ] ; then
-			echo "$pizza_size $pizza_crust $pizza_toppings" >> $pizzafile
-			$pizza_finished=false
+		# (size, crust, and toppings). Criteria is stored on two lines if 
+		# the order was completed.
+		pizza_line_count=$(wc -l $temppizza | cut -f1 -d ' ')
+		if [ "$pizza_line_count" == '2' ] ; then
+
+			pizza_size=$(sed '1q;d' $temppizza | cut -f1 -d ' ')
+			pizza_crust=$(sed '1q;d' $temppizza | cut -f2 -d ' ')
+			pizza_toppings=$(sed '2q;d' $temppizza)
+
+			echo "$pizza_size $pizza_crust :$pizza_toppings" >> $pizzafile
 		fi
 
-		# Need to delete temp file after getting the information from it.
-		read
 		rm $temppizza
 
 		# Will need to have a way to check if the order has been finished

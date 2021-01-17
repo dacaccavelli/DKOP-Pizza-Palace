@@ -1,27 +1,10 @@
 #!/bin/bash
-
 #Pizza Project
 # 12/29/2020
 # Omer Bayrakdar
 
 clear
 
-echo ""
-echo ""
-echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
-\e[0m"
-echo ""
-
-pizzaToppings=(TOMATOES ONION PEPPERONI CHEESE MUSHROOM JALAPENO OLIVES CUCUMBE>
-counter=1
-for t in ${pizzaToppings[@]}
-do
-echo "$counter  $t"
-((counter++))
-done
-echo ""
-dupe_flag=false
-topp_arr=()
 add-topping() {
 
          #if there are duplicate numbers
@@ -35,6 +18,47 @@ add-topping() {
          fi
  }
 
+confirmation() {
+
+	echo  "You chose the following toppings: ${selectedTopps[@]}."
+        read -p "Is this correct? (y/n): " choice
+	choice=${choice,,}
+        case $choice in
+        "yes" | "y")    clear
+                        order_correct=true
+                        echo "Great! Your pizza has been added to the order."
+                        ;;
+        "no" | "n")     clear
+                        echo "Let's try again...";;
+        *)              clear
+                        echo "Sorry, I did not understand..."
+                        confirmation;;
+        esac
+
+}
+
+
+order_correct=false
+pizzaToppings=(Tomatoes Onion Pepperoni "Extra Cheese" Mushroom Jalapeno Olives Cucumber "Red Pepper" Sausage)
+
+while :; do
+echo ""
+echo ""
+echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
+\e[0m"
+echo ""
+
+counter=1
+for t in "${pizzaToppings[@]}"
+do
+echo "$counter  $t"
+((counter++))
+done
+echo ""
+
+dupe_flag=false
+topp_arr=()
+
 read -p "Please Enter multiple Toppings numbers separated by space: " selection
 echo ""
 echo ""
@@ -46,18 +70,28 @@ echo ""
  read -a numarr <<< "$selection"
  for i in "${numarr[@]}" ; do
 
-# if something is not in the array (either number too big, or not an integer)
+# if something is not in the array (not a number, number too big, or not an integer)
+# it does not try to add it to the topping list
          (( i-- ))
          case "$i" in
-         [0-9] | 1[0-1]) add-topping $i;;
+         [0-9] | 10) add-topping $i;;
          *) echo "Entry $i is not recognized";;
          esac
          dupe_flag=false
  done
-selectedTopp=()
+selectedTopps=()
 
 for i in "${topp_arr[@]}" ; do
-echo "${pizzaToppings[$i]}"
-selectedTopp+=("${pizzaToppings[$i]}")
+	# echo "${pizzaToppings[$i]}"
+	selectedTopps+=("${pizzaToppings[$i]}")
 done
-echo "${selectedTopp[@]}"
+
+confirmation 
+
+if [ "$order_correct" == "true" ]; then
+
+	echo "${selectedTopps[@]}" >> $temppizza
+	break
+fi
+
+done

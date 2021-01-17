@@ -119,6 +119,5 @@ done
 # File gets deleted in main.sh after adding the pizza
 # to the running total.
 touch $temppizza
-echo $size $crust < $temppizza
-
-
+echo "$size $crust" > $temppizza
+./src/toppings.sh
