@@ -21,7 +21,7 @@ read -p "Is the above information correct? (y/n)  " choice
 case $choice in 
 "yes" | "y") 	echo "Great! Thank you!"
 		touch $customerinfo
-		echo "$customername $lname" >> $customerinfo
+		echo "$customername $lname" > $customerinfo
 		echo "$address" >> $customerinfo
 		echo "$phone" >> $customerinfo
 		info_correct=true;;
