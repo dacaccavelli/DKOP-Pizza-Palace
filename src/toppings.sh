@@ -91,6 +91,7 @@ confirmation
 if [ "$order_correct" == "true" ]; then
 
 	echo "${selectedTopps[@]}" >> $temppizza
+
 	break
 fi
 

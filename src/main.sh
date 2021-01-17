@@ -89,6 +89,7 @@ display-current-order() {
 		size=$(echo $line | cut -f1 -d ' ')
 		crust=$(echo $line | cut -f2 -d ' ')
 		tops=$(echo $line | cut -f2 -d ':')
+		echo "$tops" | wc -w
 		echo "$counter. $size, $crust crust pizza with $tops"
 		(( counter++ ))
 	done < $pizzafile

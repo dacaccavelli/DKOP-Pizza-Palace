@@ -3,4 +3,4 @@ Medium regular :pepperoni
 Small thin :olives
 Xlarge thick :cheese
 Large stuffed :onions
-Small Thin :Tomatoes Onion Pepperoni
+Small Thin :Tomatoes Onion Pepperoni Extra Cheese Mushroom Jalapeno
