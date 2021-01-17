@@ -24,6 +24,7 @@ fi
 
 export pizzafile="tmp/running-order.txt"
 export temppizza="tmp/temp-pizza.txt"
+export customerinfo="tmp/cust-info.txt"
 
 #-------------------------------------------
 #Testing
@@ -151,8 +152,8 @@ delivery-or-carryout() {
 
 	# Switch betwen delivery form for user info or just pricing.
 	case $choice in
-	1) echo "redirect to delivery form, then to pricing";;
-	#1)./src/delivery.sh;;
+	#1) echo "redirect to delivery form, then to pricing";;
+	1)./src/delivery.sh;;
 	esac
 
 	#Calls pricing.sh to get final totals.
