@@ -4,28 +4,12 @@ size_price=(1.00 2.00 3.00 4.00)
 crust=(0.50 1.00 2.00)
 GrandTotal=0
 
-calculate-pizza $size $crust $num-topps
-calculate-pizza() {
-
-#size crust number-of-toppings
-echo "$1 $2 $3"
-sz=$1
-cst=$2
-
-}
-
+pizzafile="running-order.txt"
 
 #--------------------------------size-----------------
-counter=0
-while read line; do
-          if [[ "$counter" == '0' ]]; then
-            (( counter ++))
-             continue
-          fi
-           sz=$(echo $line | cut -f1 -d ' ')
-           crt=$(echo $line | cut -f2 -d ' ')
-           tps=$(echo $line | cut -f3 -d ' ')
-echo "$sz $crt $tps "
+calculate_single_pizza()
+{
+
 if [[ "$sz" == "Small" ]]; then
  pizza_size_price=${size_price[0]}
 
@@ -71,12 +55,31 @@ echo " "
 echo  -e "\e[1;32m The total will be: $total \e[0m"
 
 echo " "
-        (( counter++ ))
+}
+
+
+calculate_mupltiple_pizza()
+{
+counter=0
+while read line; do
+          if [[ "$counter" == '0' ]]; then
+            (( counter ++))
+             continue
+          fi
+           sz=$(echo $line | cut -f1 -d ' ')
+           crt=$(echo $line | cut -f2 -d ' ')
+           tps=$(echo $line | cut -f3 -d ' ')
+echo "$sz $crt $tps "
+
+calculate_single_pizza
+
+(( counter++ ))
 done < $pizzafile
+
+}
+calculate_mupltiple_pizza
 
 Tax=$(echo "scale=2; ($total*0.025)" | bc)
 echo  -e "\e[1;32m The Tax will be: $Tax \e[0m"
 echo  -e "\e[1;32m The Grand Total will be: $GrandTotal \e[0m"
-
-
 
