@@ -13,11 +13,11 @@ read -p "Please enter your phone number: " phone
 }
 
 confirmation() {
-echo "Your information:"
-echo "-----------------"
-echo "Name: $customername $lname"
-echo "Address: $address"
-echo "Phone number: $phone"
+echo -e "\x1b[35m Your information:"
+echo -e "\x1b[32m-----------------"
+echo -e "\x1b[35m Name: $customername $lname"
+echo -e "\x1b[35m Address: $address"
+echo -e "\x1b[35m Phone number: $phone"
 read -p "Is the above information correct? (y/n)  " choice
 
 case $choice in 
@@ -38,7 +38,7 @@ clear
 
 header
 
-echo "Hi $customername, we need a little more information for your delivery..."
+echo -e "\x1b[33m Hi $customername, we need a little more information for your delivery..."
 
 gather-info
 

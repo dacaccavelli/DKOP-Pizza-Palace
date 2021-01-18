@@ -26,13 +26,14 @@ size_prompt() {
 	#echo -e "\x1b[35m Please select a size from the list by using"
 	#echo -e "\x1b[35mthe corresponding number. Enter zero (0) to"
 	#echo "return to the previous menu."
-        toilet -f term Please select a size from the list by using the corresponding number. --gay 
-        echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
+        #toilet -f term Please select a size from the list by using the corresponding number. --gay
+        echo -e "\x1b[33m Please select a size from the list by using the corresponding number."
+        #echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
 	# Displays the size with the matching choice number.
 	counter=1
-	echo -e "\x1b[35m0. Return to main menu"
+	echo -e "\x1b[36m0. Return to main menu"
 	for size in ${size_arr[@]}; do
-		echo -e "\x1b[35m$counter. $size"
+		echo -e "\x1b[36m$counter. $size"
 		((counter++))
 	done
 
@@ -53,11 +54,12 @@ crust_prompt() {
 # Function to prompt pizza crust choice and store the result.
 
 	# Initial prompt with user instructions
-	toilet -f term Please select a crust type from the list by using the corresponding number. --gay
-        echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
+	#toilet -f term Please select a crust type from the list by using the corresponding number. --gay
+        echo -e "\x1b[33m Please select a size from the list by using the corresponding number."
+        #echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
 
 	# Displays the options for the crusts.
-	echo -e "\x1b[35m0. Return to main menu"
+	echo -e "\x1b[36m0. Return to main menu"
 	counter=1
 	for crust in ${crust_arr[@]}; do
 		echo -e "\x1b[36m$counter. $crust"
@@ -83,7 +85,7 @@ user_prompts() {
 	# Prompts user to choose the size of the pizza
 	# and prints their choice.
 	size_prompt
-	echo -e "\x1b[35m You chose $size"
+	echo -e "\x1b[32m You chose $size"
 
 	# Prompt user to choose their pizza crust
 	# and prints their choice
