@@ -7,23 +7,25 @@ price_per_topp=1
 #--------------------------------size-----------------
 calculate-single-pizza()
 {
-sz=$1
-sz=${sz,,}
+total=0
+
+size=$1
+size=${size,,}
 crust=$2
 crust=${crust,,}
 topp_count=$3
 
-if [[ "$sz" == "small" ]]; then
- pizza_size_price=${size_prices[0]}
+if [[ "$size" == "small" ]]; then
+pizza_size_price=${size_prices[0]}
 
-elif [[ "$sz" == "medium" ]]; then
+elif [[ "$size" == "medium" ]]; then
 pizza_size_price=${size_prices[1]}
 
-elif [[ "$sz" == "large" ]]; then
+elif [[ "$size" == "large" ]]; then
 pizza_size_price=${size_prices[2]}
 
 elif
- [[ "$sz" == "xlarge" ]]; then
+ [[ "$size" == "xlarge" ]]; then
 pizza_size_price=${size_prices[3]}
 
 fi
@@ -77,17 +79,17 @@ while read line; do
             (( counter ++))
              continue
           fi
-           sz=$(echo $line | cut -f1 -d ' ')
+           sz=$(echo $line | awk '{ print $1 }')
            crt=$(echo $line | cut -f2 -d ' ')
            tps=$(echo $line | cut -f3 -d ' ')
-echo "$sz $crt $tps "
 
 calculate-single-pizza $sz $crt $tps
-echo $total
 
 subtotal=$(echo "scale=2; $subtotal+$total" | bc)
 (( counter++ ))
 done < $pizzafile
+
+header
 
 echo " "
 echo  -e "\e[1;32m The subtotal will be: $subtotal \e[0m"
@@ -97,5 +99,9 @@ tax=$( printf "%0.2f\n" $(echo "scale=2; $subtotal*0.053" | bc))
 echo  -e "\e[1;32m The Tax will be: $tax \e[0m"
 grand_total=$(echo "scale=2; $subtotal+$tax" | bc)
 echo  -e "\e[1;32m The Grand Total will be: $grand_total \e[0m"
+
+echo $subtotal >> $pizzafile
+echo $tax >> $pizzafile
+echo $grand_total >> $pizzafile
 read
 }

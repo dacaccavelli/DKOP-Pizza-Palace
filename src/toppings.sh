@@ -3,6 +3,9 @@
 # 12/29/2020
 # Omer Bayrakdar
 
+# sourcing functions from main.sh without actually running the file
+source ./src/main.sh --source-only
+
 clear
 
 add-topping() {
@@ -20,7 +23,9 @@ add-topping() {
 
 confirmation() {
 
-	echo  "You chose the following toppings: ${selectedTopps[@]}."
+	printf -v joined '%s, ' "${selectedTopps[@]}"
+	echo "You chose the following toppings: ${joined}"
+	#echo  "You chose the following toppings: ${selectedTopps[@]}."
         read -p "Is this correct? (y/n): " choice
 	choice=${choice,,}
         case $choice in
@@ -42,6 +47,9 @@ order_correct=false
 pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumber "Red Pepper")
 
 while :; do
+
+header
+
 echo ""
 echo ""
 echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
@@ -61,43 +69,48 @@ topp_arr=()
 
 
 echo "Please enter the numbers for as many toppings as you would like, separated"
-read -p "by spaces (enter zero (0) for no toppings): " selection
+echo "by spaces (enter zero (0) for no toppings or leave it blank to cancel the"
+read -p "current pizza order): " selection
 echo ""
 echo ""
-echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
-\e[0m"
-echo ""
-IFS=' '
-#here-string
-read -a numarr <<< "$selection"
-for i in "${numarr[@]}" ; do
 
-# if something is not in the array (not a number, number too big, or not an integer)
-# it does not try to add it to the topping list
-        (( i-- ))
-        case "$i" in
-        -1 | [0-9] | 10) add-topping $i;;
-        *) echo "Entry $i is not recognized";;
-        esac
-        dupe_flag=false
-done
-selectedTopps=()
+if [ -n "$selection" ]; then
+	echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
+	\e[0m"
+	echo ""
+	IFS=' '
+	#here-string
+	read -a numarr <<< "$selection"
+	for i in "${numarr[@]}" ; do
 
-if [[ "${topp_arr[@]}" =~ "-1" ]]; then
-	selectedTopps=("None")
+	# if something is not in the array (not a number, number too big, or not an integer)
+	# it does not try to add it to the topping list
+	        (( i-- ))
+	        case "$i" in
+	        -1 | [0-9] | 10) add-topping $i;;
+	        *) echo "Entry $i is not recognized";;
+	        esac
+	        dupe_flag=false
+	done
+	selectedTopps=()
+
+	if [[ "${topp_arr[@]}" =~ "-1" ]]; then
+		selectedTopps=("None")
+	else
+		for i in "${topp_arr[@]}" ; do
+			selectedTopps+=("${pizzaToppings[$i]}")
+		done
+	fi
+	confirmation 
+
+	if [ "$order_correct" == "true" ]; then
+
+		for i in "${selectedTopps[@]}" ; do
+			echo "$i" >> $temppizza
+		done
+		break
+	fi
 else
-	for i in "${topp_arr[@]}" ; do
-		selectedTopps+=("${pizzaToppings[$i]}")
-	done
-fi
-confirmation 
-
-if [ "$order_correct" == "true" ]; then
-
-	for i in "${selectedTopps[@]}" ; do
-		echo "$i" >> $temppizza
-	done
 	break
 fi
-
 done

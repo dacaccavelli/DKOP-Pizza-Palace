@@ -31,7 +31,7 @@ export receipt="receipts/$customername-$date-receipt.txt"
 
 export delivery=false
 order_finished=false
-
+first=true
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
 
@@ -77,19 +77,19 @@ welcoming() {
         echo ""
         echo ""
 
-	read -p "What is your name? " customername
-	echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
+	read -p "What is your first name? " customername
+	#echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
 
 	# Initializing the table with column headers
 	echo " "
         echo -e "\e[1;36m Size Crust-Type Toppings \e[0m" > $pizzafile
 
 	# Preloading the order for testing
-
-	echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
-	echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
-	echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
-	echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
+	./src/crust.sh
+	#echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
+	#echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
+	#echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
+	#echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
 
 	# Exporting the customername for the other files.
 	export customername
@@ -117,23 +117,29 @@ display-current-order() {
 	if [[ "$counter" == '1' ]]; then
 		echo -e "\e[1;31m The order is currently empty \e[0m"
 	fi
-	echo -e "\e[1;31m  \e[0m"
+	#echo -e "\e[1;31m  \e[0m"
 	echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 }
 
+header() {
+# Function that acts as a header for the other files
+	echo "----------------DKOP Pizza Palace --------------"
+	display-current-order
+}
 
 order-and-options() {
 # Function to display the current order and the main options.
 
 	# Calls function to display running order.
-	display-current-order
+	header
 
 	echo -e "\e[1;33m $customername, please select an option from the \e[0m"
 	echo -e "\e[1;33m list below by using the corresponding number: \e[0m"
 	echo -e "\e[1;32m ----------------------------------------------- \e[0m"
 	echo -e "\e[1;35m To order a new pizza, enter 1. \e[0m"
 	echo -e "\e[1;35m To remove a pizza from the order, enter 2. \e[0m"
-	echo -e "\e[1;35m To finish your order, enter 3. \e[0m"
+	echo -e "\e[1;35m To see a detailed view of your order, enter 3. \e[0m"
+	echo -e "\e[1;35m To finish your order, enter 4. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -207,19 +213,23 @@ main() {
 
 		# Clearing the CLI
 		clear
+		
+		if [ "$first" == "false" ]; then
+			# Gives the user the current order and options.
+			order-and-options
 
-		# Gives the user the current order and options.
-		order-and-options
-
-		#Switch case for selecting what the user wants to do.
-		case $choice in
-		#1) echo "this will take you to the size and toppings files";;
-		1) ./src/crust.sh;;
-		2) remove-pizza;;
-		3) delivery-or-carryout;;
-		#3) echo "this will take you to delivery/checkout choice and pricing file";;
-		esac
-
+			#Switch case for selecting what the user wants to do.
+			case $choice in
+			#1) echo "this will take you to the size and toppings files";;
+			1) ./src/crust.sh;;
+			2) remove-pizza;;
+			3) ./src/detailed-order.sh;;
+			4) delivery-or-carryout;;
+			#4) echo "this will take you to delivery/checkout choice and pricing file";;
+			esac
+		else
+			first=false
+		fi
 		# Will need to have a way to check if the order has been finished
 		# (aka finished with Pushpa's file) to stop rerunning the main file.
 		[ "$order_finished" == "true" ] && break
@@ -246,7 +256,7 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
-			echo "$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
+			echo -e "\x1b[36m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
 		rm $temppizza
@@ -267,6 +277,7 @@ main() {
 		echo "Your order will be ready in approximately 20 minutes."
 		echo "We will see you soon!"
 	fi
+	./src/receipt.sh
 	echo "You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
 	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
