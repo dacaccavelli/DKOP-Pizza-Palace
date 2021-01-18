@@ -1,54 +1,69 @@
 #!/bin/bash
 
-size_price=(1.00 2.00 3.00 4.00)
-crust=(0.50 1.00 2.00)
-
-pizzafile="running-order.txt"
+size_prices=(5.00 6.00 7.00 8.00)
+crust_prices=(5.00 6.00 7.00 8.00)
+price_per_topp=1
 
 #--------------------------------size-----------------
 calculate-single-pizza()
 {
+sz=$1
+sz=${sz,,}
+crust=$2
+crust=${crust,,}
+topp_count=$3
 
-if [[ "$sz" == "Small" ]]; then
- pizza_size_price=${size_price[0]}
+if [[ "$sz" == "small" ]]; then
+ pizza_size_price=${size_prices[0]}
 
-elif [[ "$sz" == "Medium" ]]; then
-pizza_size_price=${size_price[1]}
+elif [[ "$sz" == "medium" ]]; then
+pizza_size_price=${size_prices[1]}
 
-elif [[ "$sz" == "Large" ]]; then
-pizza_size_price=${size_price[2]}
+elif [[ "$sz" == "large" ]]; then
+pizza_size_price=${size_prices[2]}
 
 elif
- [[ "$sz" == "Xlarge" ]]; then
-pizza_size_price=${size_price[3]}
+ [[ "$sz" == "xlarge" ]]; then
+pizza_size_price=${size_prices[3]}
 
 fi
 #echo "$pizza_size_price"
 #--------------------------toppings price------------
-if [[ "$tps" == "pepperoni" ]]; then
-tp=1.00
-
-elif [[ "$tps" == "olives" ]]; then
-tp=1.00
-
-elif [[ "$tps" == "onions" ]]; then
-tp=1.00
-
-fi
-#echo "$tp"
+#if [[ "$tps" == "pepperoni" ]]; then
+#tp=1.00
+#
+#elif [[ "$tps" == "olives" ]]; then
+#tp=1.00
+#
+#elif [[ "$tps" == "onions" ]]; then
+#tp=1.00
+#
+#fi
+##echo "$tp"
 #--------------------------crust price---------------
 
-if [[ "$crt" == "regular" ]]; then
-crust_price=${crust[0]}
+if [[ "$crust" == "thin" ]]; then
+crust_price=${crust_prices[0]}
 
-elif [[ "$crt" == "thin" ]]; then
-crust_price=${crust[1]}
+elif [[ "$crust" == "regular" ]]; then
+crust_price=${crust_prices[1]}
 
-elif [[ "$crt" == "stuffed" ]]; then
-crust_price=${crust[2]}
+elif [[ "$crust" == "thick" ]]; then
+crust_price=${crust_prices[2]}
+
+elif [[ "$crust" == "stuffed" ]]; then
+crust_price=${crust_prices[3]}
 fi
 #echo "$crust_price"
+
+tp=$(( $topp_count * $price_per_topp ))
 total=$(echo "scale=2; $pizza_size_price+$tp+$crust_price" | bc)
+
+# Storing variable if called as single pizza calculation
+if [ ! -z "${1}" ]; then
+        echo $total >> $temppizza
+fi
+
 }
 
 

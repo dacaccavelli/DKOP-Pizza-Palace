@@ -90,8 +90,9 @@ confirmation
 
 if [ "$order_correct" == "true" ]; then
 
-	echo "${selectedTopps[@]}" >> $temppizza
-
+	for i in "${selectedTopps[@]}" ; do
+		echo "$i" >> $temppizza
+	done
 	break
 fi
 

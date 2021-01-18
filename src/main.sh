@@ -69,10 +69,10 @@ welcoming() {
 	echo "Size Crust-Type Toppings" > $pizzafile
 
 	# Preloading the order for testing
-	echo "Medium regular :pepperoni" >> $pizzafile
-	echo "Small thin :olives" >> $pizzafile
-	echo "Xlarge thick :cheese" >> $pizzafile
-	echo "Large stuffed :onions" >> $pizzafile
+	echo "Medium regular 1 13.00 : Pepperoni" >> $pizzafile
+	echo "Small thin 1 11.00 : Olives" >> $pizzafile
+	echo "Xlarge thick 1 16.00 : Cheese" >> $pizzafile
+	echo "Large stuffed 1 16.00 : Onions" >> $pizzafile
 
 	# Exporting the customername for the other files.
 	export customername
@@ -82,8 +82,8 @@ welcoming() {
 display-current-order() {
 # Function to read the file containing the current order
 
-	echo "------------------- Current Order ------------------------"
-	echo "|                                                        |"
+	echo "------------------- Current Order ----------------------------------"
+	echo ""
 	counter=0
 	while read line; do
 		if [[ "$counter" == '0' ]]; then
@@ -92,16 +92,16 @@ display-current-order() {
 		fi
 		size=$(echo $line | cut -f1 -d ' ')
 		crust=$(echo $line | cut -f2 -d ' ')
-		tops=$(echo $line | cut -f2 -d ':')
-		echo "$tops" | wc -w
-		echo "$counter. $size, $crust crust pizza with $tops"
+		tops=$(echo $line | cut -f3 -d ' ')
+		price=$(echo $line | cut -f4 -d ' ')
+		echo "$counter. $size, $tops topping $crust crust pizza		$price"
 		(( counter++ ))
 	done < $pizzafile
 	if [[ "$counter" == '1' ]]; then
 		echo "The order is currently empty"
 	fi
 	echo ""
-	echo "----------------------------------------------------------"
+	echo "--------------------------------------------------------------------"
 }
 
 
@@ -202,14 +202,20 @@ main() {
 		# Adding the new pizza if all criteria for the pizza were met
 		# (size, crust, and toppings). Criteria is stored on two lines if 
 		# the order was completed.
+
 		pizza_line_count=$(wc -l $temppizza | cut -f1 -d ' ')
-		if [ "$pizza_line_count" == '2' ] ; then
+		if [ "$pizza_line_count" -gt '1' ] ; then
 
 			pizza_size=$(sed '1q;d' $temppizza | cut -f1 -d ' ')
 			pizza_crust=$(sed '1q;d' $temppizza | cut -f2 -d ' ')
-			pizza_toppings=$(sed '2q;d' $temppizza)
+			pizza_toppings_count=$(( $pizza_line_count - 1 ))
+			pizza_toppings=$(sed "2,${pizza_line_count}!d" $temppizza | awk -v d=", " '{s=(NR==1?s:s d)$0}END{print s}')
 
-			echo "$pizza_size $pizza_crust :$pizza_toppings" >> $pizzafile
+			calculate-single-pizza $pizza_size $pizza_crust $pizza_toppings_count
+			((pizza_line_count++))
+			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
+
+			echo "$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
 		rm $temppizza
