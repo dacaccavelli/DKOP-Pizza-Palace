@@ -99,7 +99,8 @@ welcoming() {
 display-current-order() {
 # Function to read the file containing the current order
 
-	if [ "first" == "false" ]; then
+
+	if [ "$first" == "false" ]; then
 		echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
 		#echo -e "\e[1;32m |                                                        | \e[0m"
 		counter=0
@@ -215,7 +216,7 @@ main() {
 
 		# Clearing the CLI
 		clear
-		
+
 		if [ "$first" == "false" ]; then
 			# Gives the user the current order and options.
 			order-and-options
@@ -258,6 +259,7 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
+			read -p "$pizza_size $pizza_crust $pizza_toppings_count $pizza_toppings"
 			echo -e "\x1b[36m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
