@@ -31,7 +31,7 @@ export receipt="receipts/$customername-$date-receipt.txt"
 
 export delivery=false
 order_finished=false
-
+first=true
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
 
@@ -85,11 +85,11 @@ welcoming() {
         echo -e "\e[1;36m Size Crust-Type Toppings \e[0m" > $pizzafile
 
 	# Preloading the order for testing
-
-	echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
-	echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
-	echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
-	echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
+	./src/crust.sh
+	#echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
+	#echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
+	#echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
+	#echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
 
 	# Exporting the customername for the other files.
 	export customername
@@ -117,7 +117,7 @@ display-current-order() {
 	if [[ "$counter" == '1' ]]; then
 		echo -e "\e[1;31m The order is currently empty \e[0m"
 	fi
-	echo -e "\e[1;31m  \e[0m"
+	#echo -e "\e[1;31m  \e[0m"
 	echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 }
 
@@ -208,20 +208,23 @@ main() {
 
 		# Clearing the CLI
 		clear
+		
+		if [ "$first" == "false" ]; then
+			# Gives the user the current order and options.
+			order-and-options
 
-		# Gives the user the current order and options.
-		order-and-options
-
-		#Switch case for selecting what the user wants to do.
-		case $choice in
-		#1) echo "this will take you to the size and toppings files";;
-		1) ./src/crust.sh;;
-		2) remove-pizza;;
-		3) ./src/detailed-order.sh;;
-		4) delivery-or-carryout;;
-		#4) echo "this will take you to delivery/checkout choice and pricing file";;
-		esac
-
+			#Switch case for selecting what the user wants to do.
+			case $choice in
+			#1) echo "this will take you to the size and toppings files";;
+			1) ./src/crust.sh;;
+			2) remove-pizza;;
+			3) ./src/detailed-order.sh;;
+			4) delivery-or-carryout;;
+			#4) echo "this will take you to delivery/checkout choice and pricing file";;
+			esac
+		else
+			first=false
+		fi
 		# Will need to have a way to check if the order has been finished
 		# (aka finished with Pushpa's file) to stop rerunning the main file.
 		[ "$order_finished" == "true" ] && break
