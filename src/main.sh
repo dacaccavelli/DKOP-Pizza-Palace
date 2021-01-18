@@ -26,6 +26,12 @@ export pizzafile="tmp/running-order.txt"
 export temppizza="tmp/temp-pizza.txt"
 export customerinfo="tmp/cust-info.txt"
 
+date=$( date +"%x" | sed 's/\//\_/g'  )
+export receipt="receipts/$customername-$date-receipt.txt"
+
+export delivery=false
+order_finished=false
+
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
 
@@ -151,17 +157,20 @@ delivery-or-carryout() {
 	echo "-----------------------------------------------"
 	echo "To choose delivery, enter 1."
 	echo "To choose carryout, enter 2."
+	echo "To return to the main menu, enter 0."
 	read -p "Enter your choice..." choice
 
 	# Switch betwen delivery form for user info or just pricing.
 	case $choice in
-	#1) echo "redirect to delivery form, then to pricing";;
-	1)./src/delivery.sh;;
+		0) continue;;
+		1) delivery=true
+		   ./src/delivery.sh
+		   calculate-multiple-pizzas
+		   order_finished=true;;
+		2) calculate-multiple-pizzas
+		   order_finished=true;;
 	esac
 
-	#Calls pricing.sh to get final totals.
-	calculate-multiple-pizzas
-	#./src/pricing.sh
 }
 
 
@@ -199,6 +208,10 @@ main() {
 		#3) echo "this will take you to delivery/checkout choice and pricing file";;
 		esac
 
+		# Will need to have a way to check if the order has been finished
+		# (aka finished with Pushpa's file) to stop rerunning the main file.
+		[ "$order_finished" == "true" ] && break
+
 		# Adding the new pizza if all criteria for the pizza were met
 		# (size, crust, and toppings). Criteria is stored on two lines if 
 		# the order was completed.
@@ -226,8 +239,6 @@ main() {
 
 		rm $temppizza
 
-		# Will need to have a way to check if the order has been finished
-		# (aka finished with Pushpa's file) to stop rerunning the main file.
 
 	done
 	# End of the main loop
@@ -235,8 +246,18 @@ main() {
 	#----------------------------------------------------------------
 	# Section 4: Closing statements and cleanup of the created file.
 
+	if [ "$delivery" == "true" ]; then
+		address=$(sed '2q;d' $customerinfo)
+		phone=$(sed '3q;d' $customerinfo)
+		echo "Expect your delivery to $address to arrive within 30 minutes."
+		echo "If there are any issues, we will call you at $phone."
+	else
+		echo "Your order will be ready in approximately 20 minutes."
+		echo "We will see you soon!"
+	fi
+	echo "You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
-	echo "Thank you for visiting DKOP Pizza Palace"
+	echo "Thank you $customername for visiting DKOP Pizza Palace"
 	echo "Have a good day! Press any key to exit..."
 	read
 }
