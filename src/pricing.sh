@@ -2,12 +2,11 @@
 
 size_price=(1.00 2.00 3.00 4.00)
 crust=(0.50 1.00 2.00)
-GrandTotal=0
 
 pizzafile="running-order.txt"
 
 #--------------------------------size-----------------
-calculate_single_pizza()
+calculate-single-pizza()
 {
 
 if [[ "$sz" == "Small" ]]; then
@@ -24,7 +23,7 @@ elif
 pizza_size_price=${size_price[3]}
 
 fi
-echo "$pizza_size_price"
+#echo "$pizza_size_price"
 #--------------------------toppings price------------
 if [[ "$tps" == "pepperoni" ]]; then
 tp=1.00
@@ -36,7 +35,7 @@ elif [[ "$tps" == "onions" ]]; then
 tp=1.00
 
 fi
-echo "$tp"
+#echo "$tp"
 #--------------------------crust price---------------
 
 if [[ "$crt" == "regular" ]]; then
@@ -48,18 +47,15 @@ crust_price=${crust[1]}
 elif [[ "$crt" == "stuffed" ]]; then
 crust_price=${crust[2]}
 fi
-echo "$crust_price"
+#echo "$crust_price"
 total=$(echo "scale=2; $pizza_size_price+$tp+$crust_price" | bc)
-GrandTotal=$(echo "scale=2; $GrandTotal+$total" | bc)
-echo " "
-echo  -e "\e[1;32m The total will be: $total \e[0m"
-
-echo " "
 }
 
 
-calculate_mupltiple_pizza()
+calculate-multiple-pizzas()
 {
+
+subtotal=0
 counter=0
 while read line; do
           if [[ "$counter" == '0' ]]; then
@@ -68,18 +64,23 @@ while read line; do
           fi
            sz=$(echo $line | cut -f1 -d ' ')
            crt=$(echo $line | cut -f2 -d ' ')
-           tps=$(echo $line | cut -f3 -d ' ')
+           tps=$(echo $line | cut -f2 -d ':')
 echo "$sz $crt $tps "
 
-calculate_single_pizza
+calculate-single-pizza
+echo $total
 
+subtotal=$(echo "scale=2; $subtotal+$total" | bc)
 (( counter++ ))
 done < $pizzafile
 
+echo " "
+echo  -e "\e[1;32m The subtotal will be: $subtotal \e[0m"
+
+echo " "
+tax=$(echo "scale=2; ($subtotal*0.05)" | bc)
+echo  -e "\e[1;32m The Tax will be: $tax \e[0m"
+grand_total=$(echo "scale=2; $subtotal+$tax" | bc)
+echo  -e "\e[1;32m The Grand Total will be: $grand_total \e[0m"
+read
 }
-calculate_mupltiple_pizza
-
-Tax=$(echo "scale=2; ($total*0.025)" | bc)
-echo  -e "\e[1;32m The Tax will be: $Tax \e[0m"
-echo  -e "\e[1;32m The Grand Total will be: $GrandTotal \e[0m"
-

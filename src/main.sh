@@ -26,6 +26,9 @@ export pizzafile="tmp/running-order.txt"
 export temppizza="tmp/temp-pizza.txt"
 export customerinfo="tmp/cust-info.txt"
 
+# sourcing functions from main.sh without actually running the file
+source ./src/pricing.sh --source-only
+
 #-------------------------------------------
 #Testing
 
@@ -157,7 +160,8 @@ delivery-or-carryout() {
 	esac
 
 	#Calls pricing.sh to get final totals.
-	./src/pricing.sh
+	calculate-multiple-pizzas
+	#./src/pricing.sh
 }
 
 
@@ -219,7 +223,7 @@ main() {
 	#----------------------------------------------------------------
 	# Section 4: Closing statements and cleanup of the created file.
 
-	rm $pizzafile
+	rm -r tmp
 	echo "Thank you for visiting DKOP Pizza Palace"
 	echo "Have a good day! Press any key to exit..."
 	read
