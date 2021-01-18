@@ -73,7 +73,7 @@ welcoming() {
         echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
         echo ""
         echo ""
-        toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay 
+        toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay
         echo ""
         echo ""
 
@@ -99,26 +99,29 @@ welcoming() {
 display-current-order() {
 # Function to read the file containing the current order
 
-	echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
-	#echo -e "\e[1;32m |                                                        | \e[0m"
-	counter=0
-	while read line; do
-		if [[ "$counter" == '0' ]]; then
-			(( counter ++ ))
-			continue
+
+	if [ "$first" == "false" ]; then
+		echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
+		#echo -e "\e[1;32m |                                                        | \e[0m"
+		counter=0
+		while read line; do
+			if [[ "$counter" == '0' ]]; then
+				(( counter ++ ))
+				continue
+			fi
+			size=$(echo $line | cut -f1 -d ' ')
+			crust=$(echo $line | cut -f2 -d ' ')
+			tops=$(echo $line | cut -f3 -d ' ')
+			price=$(echo $line | cut -f4 -d ' ')
+			echo  -e "\x1b[35m$counter. $size, $tops topping $crust crust pizza		$price"
+			(( counter++ ))
+		done < $pizzafile
+		if [[ "$counter" == '1' ]]; then
+			echo -e "\e[1;31m The order is currently empty \e[0m"
 		fi
-		size=$(echo $line | cut -f1 -d ' ')
-		crust=$(echo $line | cut -f2 -d ' ')
-		tops=$(echo $line | cut -f3 -d ' ')
-		price=$(echo $line | cut -f4 -d ' ')
-		echo  -e "\x1b[35m$counter. $size, $tops topping $crust crust pizza		$price"
-		(( counter++ ))
-	done < $pizzafile
-	if [[ "$counter" == '1' ]]; then
-		echo -e "\e[1;31m The order is currently empty \e[0m"
+		#echo -e "\e[1;31m  \e[0m"
+		echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 	fi
-	#echo -e "\e[1;31m  \e[0m"
-	echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 }
 
 header() {
@@ -213,7 +216,7 @@ main() {
 
 		# Clearing the CLI
 		clear
-		
+
 		if [ "$first" == "false" ]; then
 			# Gives the user the current order and options.
 			order-and-options
@@ -256,6 +259,7 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
+			read -p "$pizza_size $pizza_crust $pizza_toppings_count $pizza_toppings"
 			echo -e "\x1b[36m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
