@@ -26,10 +26,11 @@ size_prompt() {
 	#echo -e "\x1b[35m Please select a size from the list by using"
 	#echo -e "\x1b[35mthe corresponding number. Enter zero (0) to"
 	#echo "return to the previous menu."
-        toilet -f term Please select a size from the list by using the coresponding numbe. --gay 
+        toilet -f term Please select a size from the list by using the corresponding number. --gay 
         echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
 	# Displays the size with the matching choice number.
 	counter=1
+	echo -e "\x1b[35m0. Return to main menu"
 	for size in ${size_arr[@]}; do
 		echo -e "\x1b[35m$counter. $size"
 		((counter++))
@@ -56,6 +57,7 @@ crust_prompt() {
         echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
 
 	# Displays the options for the crusts.
+	echo -e "\x1b[35m0. Return to main menu"
 	counter=1
 	for crust in ${crust_arr[@]}; do
 		echo -e "\x1b[36m$counter. $crust"

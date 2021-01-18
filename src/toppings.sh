@@ -8,7 +8,7 @@ source ./src/main.sh --source-only
 
 clear
 
-add-topping() {
+dupe-topping() {
 
          #if there are duplicate numbers
          for j in "${topp_arr[@]}" ; do
@@ -22,22 +22,24 @@ add-topping() {
  }
 
 confirmation() {
+# Function to check if the selected toppings are correct.
 
 	printf -v joined '%s, ' "${selectedTopps[@]}"
 	echo "You chose the following toppings: ${joined}"
-	#echo  "You chose the following toppings: ${selectedTopps[@]}."
         read -p "Is this correct? (y/n): " choice
+
+	# Changes input to lowercase
 	choice=${choice,,}
         case $choice in
-        "yes" | "y")    clear
-                        order_correct=true
-                        echo "Great! Your pizza has been added to the order."
-                        ;;
-        "no" | "n")     clear
-                        echo "Let's try again...";;
-        *)              clear
-                        echo "Sorry, I did not understand..."
-                        confirmation;;
+	        "yes" | "y")    clear
+	                        order_correct=true
+	                        echo "Great! Your pizza has been added to the order."
+	                        ;;
+	        "no" | "n")     clear
+	                        echo "Let's try again...";;
+	        *)              clear
+	                        echo "Sorry, I did not understand..."
+	                        confirmation;;
         esac
 
 }
@@ -48,69 +50,88 @@ pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno
 
 while :; do
 
-header
+	# Sourced header function from main runs.
+	header
 
-echo ""
-echo ""
-echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
-\e[0m"
-echo ""
-
-counter=1
-for t in "${pizzaToppings[@]}"
-do
-echo "$counter.  $t"
-((counter++))
-done
-echo ""
-
-dupe_flag=false
-topp_arr=()
-
-
-echo "Please enter the numbers for as many toppings as you would like, separated"
-echo "by spaces (enter zero (0) for no toppings or leave it blank to cancel the"
-read -p "current pizza order): " selection
-echo ""
-echo ""
-
-if [ -n "$selection" ]; then
-	echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
+	echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
 	\e[0m"
 	echo ""
-	IFS=' '
-	#here-string
-	read -a numarr <<< "$selection"
-	for i in "${numarr[@]}" ; do
 
-	# if something is not in the array (not a number, number too big, or not an integer)
-	# it does not try to add it to the topping list
-	        (( i-- ))
-	        case "$i" in
-	        -1 | [0-9] | 10) add-topping $i;;
-	        *) echo "Entry $i is not recognized";;
-	        esac
-	        dupe_flag=false
+	# Prints out the options
+	counter=1
+	echo -e "0.	No toppings"
+	for t in "${pizzaToppings[@]}"; do
+		echo "$counter.	$t"
+		((counter++))
 	done
-	selectedTopps=()
+	echo ""
 
-	if [[ "${topp_arr[@]}" =~ "-1" ]]; then
-		selectedTopps=("None")
+	# Variables used in dupe-topping function for storing the selected toppings
+	dupe_flag=false
+	topp_arr=()
+
+	echo "Please enter the numbers for as many toppings as you would like, separated"
+	read -p "by spaces (leave it blank to cancel the current pizza order): " selection
+	echo ""
+
+	# Checking to see if selection is blank
+	# If it is blank, return to the main menu.
+	if [ -n "$selection" ]; then
+		echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
+		\e[0m"
+		echo ""
+
+		# Internal field separator - tells program how to separate words within the string
+		IFS=' '
+
+		# Splits the individual entries into the array
+		read -a numarr <<< "$selection"
+
+		for i in "${numarr[@]}" ; do
+		# If something is not in the array (not a number, number too big, or not an integer)
+		# it does not try to add it to the toppings list
+
+			(( i-- ))
+		        case "$i" in
+			        -1 | [0-9] | 10) dupe-topping $i;;
+			        *) echo "Entry $i is not recognized";;
+		        esac
+			# Resets the dupe flag for each entry
+		        dupe_flag=false
+		done
+
+		# Array for the toppings chosen by the user 
+		selectedTopps=()
+
+		# Checks to see if the user requested no toppings
+		if [[ "${topp_arr[@]}" =~ "-1" ]]; then
+			selectedTopps=("None")
+		else
+		# If there is a topping selected, add all actual topping names
+		# to the selectedTopps array
+
+			for i in "${topp_arr[@]}" ; do
+				selectedTopps+=("${pizzaToppings[$i]}")
+			done
+		fi
+
+		# Runs the confirmation function to see if the entered toppings are correct.
+		confirmation 
+
+		# If the selected toppings are correct, then the conditional will pass
+		if [ "$order_correct" == "true" ]; then
+
+			# Adds all toppings to temporary pizza file for 
+			# further processing in main.
+			for i in "${selectedTopps[@]}" ; do
+				echo "$i" >> $temppizza
+			done
+			break
+		fi
 	else
-		for i in "${topp_arr[@]}" ; do
-			selectedTopps+=("${pizzaToppings[$i]}")
-		done
-	fi
-	confirmation 
+	# If the topping selection was null (topping selection left blank), return to main menu.
 
-	if [ "$order_correct" == "true" ]; then
-
-		for i in "${selectedTopps[@]}" ; do
-			echo "$i" >> $temppizza
-		done
 		break
 	fi
-else
-	break
-fi
+
 done
