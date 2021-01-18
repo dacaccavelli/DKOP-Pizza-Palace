@@ -1,4 +1,4 @@
-Size Crust-Type Toppings
-Medium regular pepperoni
-Xlarge thick cheese
-Large stuffed onions
+[1;36m Size Crust-Type Toppings [0m
+[36mMedium regular pepperoni 
+[36mXlarge thick cheese 
+[36mLarge stuffed onions 
