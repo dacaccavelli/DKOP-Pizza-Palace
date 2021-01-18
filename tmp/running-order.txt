@@ -1,4 +1,5 @@
 [1;36m Size Crust-Type Toppings [0m
-[36mMedium regular pepperoni 
-[36mXlarge thick cheese 
-[36mLarge stuffed onions 
+[36mMedium regular 1 13.00 : Pepperoni
+[36mSmall thin 1 11.00 : Olives
+[36mXlarge thick 1 16.00 : Cheese
+[36mLarge stuffed 1 16.00 : Onions

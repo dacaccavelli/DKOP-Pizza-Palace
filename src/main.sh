@@ -133,7 +133,8 @@ order-and-options() {
 	echo -e "\e[1;32m ----------------------------------------------- \e[0m"
 	echo -e "\e[1;35m To order a new pizza, enter 1. \e[0m"
 	echo -e "\e[1;35m To remove a pizza from the order, enter 2. \e[0m"
-	echo -e "\e[1;35m To finish your order, enter 3. \e[0m"
+	echo -e "\e[1;35m To see a detailed view of your order, enter 3. \e[0m"
+	echo -e "\e[1;35m To finish your order, enter 4. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -216,8 +217,9 @@ main() {
 		#1) echo "this will take you to the size and toppings files";;
 		1) ./src/crust.sh;;
 		2) remove-pizza;;
-		3) delivery-or-carryout;;
-		#3) echo "this will take you to delivery/checkout choice and pricing file";;
+		3) ./src/detailed-order.sh;;
+		4) delivery-or-carryout;;
+		#4) echo "this will take you to delivery/checkout choice and pricing file";;
 		esac
 
 		# Will need to have a way to check if the order has been finished
@@ -246,7 +248,7 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
-			echo "$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
+			echo -e "\x1b[36m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
 		rm $temppizza
