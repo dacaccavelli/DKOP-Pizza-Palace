@@ -3,3 +3,4 @@ Medium regular 1 13.00 : Pepperoni
 Small thin 1 11.00 : Olives
 Xlarge thick 1 16.00 : Cheese
 Large stuffed 1 16.00 : Onions
+Medium Regular 0 12.00 : None

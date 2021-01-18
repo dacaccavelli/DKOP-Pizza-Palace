@@ -208,7 +208,13 @@ main() {
 
 			pizza_size=$(sed '1q;d' $temppizza | cut -f1 -d ' ')
 			pizza_crust=$(sed '1q;d' $temppizza | cut -f2 -d ' ')
-			pizza_toppings_count=$(( $pizza_line_count - 1 ))
+			no_topp_check=$(sed '2q;d' $temppizza)
+
+			if [ "$no_topp_check" == "None" ]; then
+				pizza_toppings_count=0
+			else
+				pizza_toppings_count=$(( $pizza_line_count - 1 ))
+			fi
 			pizza_toppings=$(sed "2,${pizza_line_count}!d" $temppizza | awk -v d=", " '{s=(NR==1?s:s d)$0}END{print s}')
 
 			calculate-single-pizza $pizza_size $pizza_crust $pizza_toppings_count

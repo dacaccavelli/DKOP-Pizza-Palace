@@ -39,7 +39,7 @@ confirmation() {
 
 
 order_correct=false
-pizzaToppings=(Tomatoes Onion Pepperoni "Extra Cheese" Mushroom Jalapeno Olives Cucumber "Red Pepper" Sausage)
+pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumber "Red Pepper")
 
 while :; do
 echo ""
@@ -51,7 +51,7 @@ echo ""
 counter=1
 for t in "${pizzaToppings[@]}"
 do
-echo "$counter  $t"
+echo "$counter.  $t"
 ((counter++))
 done
 echo ""
@@ -59,33 +59,37 @@ echo ""
 dupe_flag=false
 topp_arr=()
 
-read -p "Please Enter multiple Toppings numbers separated by space: " selection
+
+echo "Please enter the numbers for as many toppings as you would like, separated"
+read -p "by spaces (enter zero (0) for no toppings): " selection
 echo ""
 echo ""
 echo -e "\e[1;32m      ---- ADDED TOPPINGS ------
 \e[0m"
 echo ""
- IFS=' '
- #here-string
- read -a numarr <<< "$selection"
- for i in "${numarr[@]}" ; do
+IFS=' '
+#here-string
+read -a numarr <<< "$selection"
+for i in "${numarr[@]}" ; do
 
 # if something is not in the array (not a number, number too big, or not an integer)
 # it does not try to add it to the topping list
-         (( i-- ))
-         case "$i" in
-         [0-9] | 10) add-topping $i;;
-         *) echo "Entry $i is not recognized";;
-         esac
-         dupe_flag=false
- done
+        (( i-- ))
+        case "$i" in
+        -1 | [0-9] | 10) add-topping $i;;
+        *) echo "Entry $i is not recognized";;
+        esac
+        dupe_flag=false
+done
 selectedTopps=()
 
-for i in "${topp_arr[@]}" ; do
-	# echo "${pizzaToppings[$i]}"
-	selectedTopps+=("${pizzaToppings[$i]}")
-done
-
+if [[ "${topp_arr[@]}" =~ "-1" ]]; then
+	selectedTopps=("None")
+else
+	for i in "${topp_arr[@]}" ; do
+		selectedTopps+=("${pizzaToppings[$i]}")
+	done
+fi
 confirmation 
 
 if [ "$order_correct" == "true" ]; then
