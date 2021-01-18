@@ -4,7 +4,8 @@
 
 display-details() {
 # Displays the size, crust, list of toppings, and price for each pizza
-
+	
+	echo "-------------------------------DKOP Pizza Palace----------------------"
         echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
         #echo -e "\e[1;32m |                                                        | \e[0m"
         counter=0
@@ -29,5 +30,6 @@ display-details() {
 
 }
 clear
+
 display-details
 read -p "Press any key to return to the main menu"

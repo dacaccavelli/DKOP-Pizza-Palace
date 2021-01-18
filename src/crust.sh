@@ -11,6 +11,9 @@
 #---------------------
 # Script Body
 
+# sourcing functions from main.sh without actually running the file
+source ./src/main.sh --source-only
+
 # Initializing arrays for sizes and crusts.
 size_arr=( Small Medium Large X-Large)
 crust_arr=( Thin Regular Thick Stuffed)
@@ -105,6 +108,7 @@ confirmation() {
 clear
 
 while :; do
+header
 
 user_prompts
 

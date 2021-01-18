@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# sourcing functions from main.sh without actually running the file
+source ./src/main.sh --source-only
 
 info_correct=false
 
@@ -33,6 +35,8 @@ esac
 
 while :; do
 clear
+
+header
 
 echo "Hi $customername, we need a little more information for your delivery..."
 

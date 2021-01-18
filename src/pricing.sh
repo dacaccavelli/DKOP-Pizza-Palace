@@ -59,7 +59,6 @@ fi
 #echo "$crust_price"
 
 tp=$(( $topp_count * $price_per_topp ))
-echo "$pizza_size_price $tp $crust_price"
 total=$(echo "scale=2; $pizza_size_price+$tp+$crust_price-0.01" | bc)
 
 # Storing variable if called as single pizza calculation
@@ -83,14 +82,14 @@ while read line; do
            sz=$(echo $line | awk '{ print $1 }')
            crt=$(echo $line | cut -f2 -d ' ')
            tps=$(echo $line | cut -f3 -d ' ')
-echo "$sz $crt $tps "
 
 calculate-single-pizza $sz $crt $tps
-echo $total
 
 subtotal=$(echo "scale=2; $subtotal+$total" | bc)
 (( counter++ ))
 done < $pizzafile
+
+header
 
 echo " "
 echo  -e "\e[1;32m The subtotal will be: $subtotal \e[0m"

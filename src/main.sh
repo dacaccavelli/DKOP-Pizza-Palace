@@ -77,8 +77,8 @@ welcoming() {
         echo ""
         echo ""
 
-	read -p "What is your name? " customername
-	echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
+	read -p "What is your first name? " customername
+	#echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
 
 	# Initializing the table with column headers
 	echo " "
@@ -121,12 +121,17 @@ display-current-order() {
 	echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 }
 
+header() {
+# Function that acts as a header for the other files
+	echo "----------------DKOP Pizza Palace --------------"
+	display-current-order
+}
 
 order-and-options() {
 # Function to display the current order and the main options.
 
 	# Calls function to display running order.
-	display-current-order
+	header
 
 	echo -e "\e[1;33m $customername, please select an option from the \e[0m"
 	echo -e "\e[1;33m list below by using the corresponding number: \e[0m"

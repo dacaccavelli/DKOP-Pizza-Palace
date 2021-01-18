@@ -3,6 +3,9 @@
 # 12/29/2020
 # Omer Bayrakdar
 
+# sourcing functions from main.sh without actually running the file
+source ./src/main.sh --source-only
+
 clear
 
 add-topping() {
@@ -44,6 +47,9 @@ order_correct=false
 pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumber "Red Pepper")
 
 while :; do
+
+header
+
 echo ""
 echo ""
 echo -e "\e[1;31m      ---- PIZZA TOPPINGS ------
