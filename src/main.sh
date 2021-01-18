@@ -64,21 +64,32 @@ welcoming() {
 # Function to welcome the new customer and initialize the pizza file.
 
 	# Welcoming the new customer
-	echo "----------------------------------------------------------"
-	echo "Welcome to DKOP Pizza Palace! Where dreams become reality!"
-	echo "----------------------------------------------------------"
+
+	#echo  -e "\e[1;31m ---------------------------------------------------------- \e[0m"
+	echo " "
+        #echo -e "\x1b[31;42m                Welcome to DKOP Pizza Palace! Where dreams become reality! \x1b[m"
+	#echo -e "\e[1;31m ----------------------------------------------------------\e[0m"
+        #toilet -f bigmono9 -F gay DKOP PIZZA
+        echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
+        echo ""
+        echo ""
+        toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay 
+        echo ""
+        echo ""
 
 	read -p "What is your name? " customername
-	echo "Hello $customername. Thank you for coming to DKOP Pizza Palace!"
+	echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
 
 	# Initializing the table with column headers
-	echo "Size Crust-Type Toppings" > $pizzafile
+	echo " "
+        echo -e "\e[1;36m Size Crust-Type Toppings \e[0m" > $pizzafile
 
 	# Preloading the order for testing
-	echo "Medium regular 1 13.00 : Pepperoni" >> $pizzafile
-	echo "Small thin 1 11.00 : Olives" >> $pizzafile
-	echo "Xlarge thick 1 16.00 : Cheese" >> $pizzafile
-	echo "Large stuffed 1 16.00 : Onions" >> $pizzafile
+
+	echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
+	echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
+	echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
+	echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
 
 	# Exporting the customername for the other files.
 	export customername
@@ -88,8 +99,8 @@ welcoming() {
 display-current-order() {
 # Function to read the file containing the current order
 
-	echo "------------------- Current Order ----------------------------------"
-	echo ""
+	echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
+	#echo -e "\e[1;32m |                                                        | \e[0m"
 	counter=0
 	while read line; do
 		if [[ "$counter" == '0' ]]; then
@@ -100,14 +111,14 @@ display-current-order() {
 		crust=$(echo $line | cut -f2 -d ' ')
 		tops=$(echo $line | cut -f3 -d ' ')
 		price=$(echo $line | cut -f4 -d ' ')
-		echo "$counter. $size, $tops topping $crust crust pizza		$price"
+		echo  -e "\x1b[35m$counter. $size, $tops topping $crust crust pizza		$price"
 		(( counter++ ))
 	done < $pizzafile
 	if [[ "$counter" == '1' ]]; then
-		echo "The order is currently empty"
+		echo -e "\e[1;31m The order is currently empty \e[0m"
 	fi
-	echo ""
-	echo "--------------------------------------------------------------------"
+	echo -e "\e[1;31m  \e[0m"
+	echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 }
 
 
@@ -117,12 +128,12 @@ order-and-options() {
 	# Calls function to display running order.
 	display-current-order
 
-	echo "$customername, please select an option from the"
-	echo "list below by using the corresponding number:"
-	echo "-----------------------------------------------"
-	echo "To order a new pizza, enter 1."
-	echo "To remove a pizza from the order, enter 2."
-	echo "To finish your order, enter 3."
+	echo -e "\e[1;33m $customername, please select an option from the \e[0m"
+	echo -e "\e[1;33m list below by using the corresponding number: \e[0m"
+	echo -e "\e[1;32m ----------------------------------------------- \e[0m"
+	echo -e "\e[1;35m To order a new pizza, enter 1. \e[0m"
+	echo -e "\e[1;35m To remove a pizza from the order, enter 2. \e[0m"
+	echo -e "\e[1;35m To finish your order, enter 3. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -132,7 +143,7 @@ remove-pizza() {
 	# Clears the CLI
 	clear
 	# Adds current order and option to remove a pizza
-	echo "------------------ Removing a pizza ----------------------"
+	echo -e "\e[1;31m ------------------ Removing a pizza ---------------------- \e[0m"
 	display-current-order
 	read -p "Choose pizza to remove (or select '0' to cancel):" choice
 
@@ -153,11 +164,12 @@ delivery-or-carryout() {
 	display-current-order
 
 	# Prompts user to choose between delivery or carryout.
-	echo "$customername, will your order be delivery or carryout?"
-	echo "-----------------------------------------------"
-	echo "To choose delivery, enter 1."
-	echo "To choose carryout, enter 2."
-	echo "To return to the main menu, enter 0."
+	echo -e "\e[1;32m $customername, will your order be delivery or carryout? \e[0m"
+	echo -e "\e[1;31m ----------------------------------------------- \e[0m"
+	echo -e "\e[1;32m To choose delivery, enter 1. \e[0m"
+	echo -e "\e[1;32m To choose carryout, enter 2. \e[0m"
+	echo -e "\e[1;32m To return to the main menu, enter 0. \e[0m"
+
 	read -p "Enter your choice..." choice
 
 	# Switch betwen delivery form for user info or just pricing.
@@ -257,9 +269,11 @@ main() {
 	fi
 	echo "You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
-	echo "Thank you $customername for visiting DKOP Pizza Palace"
-	echo "Have a good day! Press any key to exit..."
-	read
+	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
+	#echo -e "\e[1;33m Have a good day! Press any key to exit... \e[0m"
+        echo "Thank you for vising DKOP Pizza Palace
+               Have a good day! Press any Key to exit..." | toilet -f term -F border --gay 
+   	read
 }
 
 #Calling the main function
