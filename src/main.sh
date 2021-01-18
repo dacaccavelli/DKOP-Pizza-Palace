@@ -269,6 +269,7 @@ main() {
 		echo "Your order will be ready in approximately 20 minutes."
 		echo "We will see you soon!"
 	fi
+	./src/receipt.sh
 	echo "You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
 	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
