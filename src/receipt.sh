@@ -6,6 +6,9 @@
 date=$( date +"%x" | sed 's/\//\_/g'  )
 
 #receipt="receipts/$customername-$date-receipt.txt"
+if [ ! -d "receipts" ]; then
+	mkdir receipts
+fi
 touch $receipt
 
 day=$( date +"%x" )
@@ -46,7 +49,7 @@ echo -e "\e[1;32m ----------------------- Current Order ------------------------
 subtotal=$(sed "1q;d" $temppizza)
 tax=$(sed "2q;d" $temppizza)
 grand=$(sed "3q;d" $temppizza)
-echo -en ""
+
 printf "\e[1;32m%60s \n\e[m" "Subtotal: $subtotal" >> $receipt
 printf "\e[1;32m%60s \n\e[m" "Tax: $tax" >> $receipt
 printf "\e[1;32m%60s \n\e[m" "Total: $grand" >> $receipt

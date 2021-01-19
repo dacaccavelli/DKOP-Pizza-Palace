@@ -41,7 +41,6 @@ confirmation() {
 	                        echo "Sorry, I did not understand..."
 	                        confirmation;;
         esac
-
 }
 
 
@@ -89,16 +88,25 @@ while :; do
 		# If something is not in the array (not a number, number too big, or not an integer)
 		# it does not try to add it to the toppings list
 
-			(( i-- ))
+
 		        case "$i" in
-			        -1 | [0-9] | 10) dupe-topping $i;;
+			        [0-9] | 10)(( i-- )); dupe-topping $i;;
 			        *) echo "Entry $i is not recognized";;
 		        esac
 			# Resets the dupe flag for each entry
 		        dupe_flag=false
 		done
 
-		# Array for the toppings chosen by the user 
+		# If selected toppings array is empty after checking for
+		# invalid entries, reloop
+		if [ ${#topp_arr[@]} -eq 0 ]; then
+			echo "There were no recognized entries."
+			read -p "Press any button to try again..."
+			clear
+			continue
+		fi
+
+		# Array for the toppings chosen by the user
 		selectedTopps=()
 
 		# Checks to see if the user requested no toppings
@@ -114,12 +122,12 @@ while :; do
 		fi
 
 		# Runs the confirmation function to see if the entered toppings are correct.
-		confirmation 
+		confirmation
 
 		# If the selected toppings are correct, then the conditional will pass
 		if [ "$order_correct" == "true" ]; then
 
-			# Adds all toppings to temporary pizza file for 
+			# Adds all toppings to temporary pizza file for
 			# further processing in main.
 			for i in "${selectedTopps[@]}" ; do
 				echo "$i" >> $temppizza

@@ -5,9 +5,6 @@ size_prices=(5.00 6.00 7.00 8.00)
 crust_prices=(5.00 6.00 7.00 8.00)
 price_per_topp=1
 
-# Sourcing the main file to use the functions from within.
-#source ./src/main.sh --source-only
-
 calculate-single-pizza() {
 # Function to calculate the price of a single pizza.
 
@@ -23,14 +20,14 @@ calculate-single-pizza() {
 
 	# Big conditional to select price based on the
 	# size of the pizza.
-	if [[ "$size" == "small" ]]; then
-		pizza_size_price=${size_prices[0]}
-	elif [[ "$size" == "medium" ]]; then
-		pizza_size_price=${size_prices[1]}
-	elif [[ "$size" == "large" ]]; then
-		pizza_size_price=${size_prices[2]}
-	elif [[ "$size" == "xlarge" ]]; then
-		pizza_size_price=${size_prices[3]}
+	if [[ "$size" =~ "small" ]]; then
+		size_price=${size_prices[0]}
+	elif [[ "$size" =~ "medium" ]]; then
+		size_price=${size_prices[1]}
+	elif [[ "$size" =~ "large" ]]; then
+		size_price=${size_prices[2]}
+	elif [[ "$size" =~ "xlarge" ]]; then
+		size_price=${size_prices[3]}
 	fi
 
 	#--------------------------crust price---------------
@@ -49,9 +46,8 @@ calculate-single-pizza() {
 
 	# Calculating the price of the toppings.
 	topp_price=$(( $topp_count * $price_per_topp ))
-
 	# Calculating the total price.
-	total=$(echo "scale=2; $pizza_size_price+$topp_price+$crust_price-0.01" | bc)
+	total=$(echo "scale=2; $size_price+$topp_price+$crust_price-0.01" | bc)
 
 	# Storing variable if called as single pizza calculation
 	# Will not run with call from calculate-multiple-pizzas
@@ -95,17 +91,14 @@ calculate-multiple-pizzas() {
 	header false
 
 	echo -e "\e[1;32m"
-	#echo  -e "\e[1;32m The Subtotal will be:	 \$$subtotal \e[0m"
 	printf "The Subtotal will be: %5s$subtotal \n" "$"
 
 	# Calculates and round the tax to two decimal places.
 	tax=$( printf "%0.2f\n" $(echo "scale=2; $subtotal*0.053" | bc))
-	#echo  -e "\e[1;32m The Tax will be:	 \$$tax \e[0m"
 	printf "The Tax will be: %11s$tax \n" "$"
 
 	# Calculates the grand total from the subtotal and tax.
 	grand_total=$(echo "scale=2; $subtotal+$tax" | bc)
-	#echo  -e "\e[1;32m The Grand Total will be:	 \$$grand_total" #\e[0m"
 	printf "The Grand Total will be: %2s$grand_total \n" "$"
 
 	# Used to save the values to print on the receipt.
