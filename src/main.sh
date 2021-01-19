@@ -4,7 +4,7 @@
 # Author: Daniel Caccavelli
 # Date: 12/29/2020
 
-# Description: The purpose of this script is to 
+# Description: The purpose of this script is to
 # compile the other shell files for ordering from
 # our pizza place.
 
@@ -86,7 +86,7 @@ display-current-order() {
 # and print the pizzas that have been made.
 
 	if [ "$1" == "false" ]; then
-		echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
+		echo -e "\e[1;32m-------------------- Current Order ------------------------ \e[0m"
 		counter=0
 		while read line; do
 			if [[ "$counter" == '0' ]]; then
@@ -104,7 +104,7 @@ display-current-order() {
 		if [[ "$counter" == '1' ]]; then
 			echo -e "\e[1;33m The order is currently empty \e[0m"
 		fi
-		echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
+		echo -e "\e[1;32m----------------------------------------------------------- \e[0m"
 	fi
 }
 

@@ -4,9 +4,8 @@
 # Author: Daniel Caccavelli
 # Date: 1/11/2021
 
-# Description: The purpose of this script is to
-# let the user select size and type of crust
-# for each pizza.
+# Description: The purpose of this script is to let the user select
+# size and type of crust for each pizza.
 
 #---------------------
 # Script Body
@@ -14,7 +13,8 @@
 # sourcing functions from main.sh without actually running the file
 source ./src/main.sh --source-only
 
-# Initializing arrays for sizes and crusts.
+# Initializing arrays for sizes and crusts and boolean to track
+# when both size and crust type are selected.
 size_arr=( Small Medium Large XLarge)
 crust_arr=( Thin Regular Thick Stuffed)
 order_correct=false
@@ -23,18 +23,18 @@ size_prompt() {
 # Function to prompt size choice and store the result.
 
 	# Text prompt for the user.
-	#echo -e "\x1b[35m Please select a size from the list by using"
-	#echo -e "\x1b[35mthe corresponding number. Enter zero (0) to"
-	#echo "return to the previous menu."
-        #toilet -f term Please select a size from the list by using the corresponding number. --gay
-        echo -e "\x1b[33m Please select a size from the list by using the corresponding number."
-        #echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
-	# Displays the size with the matching choice number.
+	echo -e "\x1b[33m Please select a size from the list by using the corresponding number."
+
+	# Initializing counter and first option for the choices.
 	counter=1
 	echo -e "\x1b[36m0. Return to main menu"
+
 	for size in ${size_arr[@]}; do
+	# For to which displays the size with the matching choice number.
+
 		echo -e "\x1b[36m$counter. $size"
 		((counter++))
+
 	done
 
 	# Uses switch case to store the user's choice,
