@@ -36,7 +36,7 @@ esac
 while :; do
 clear
 
-header
+header false
 
 echo -e "\x1b[33m Hi $customername, we need a little more information for your delivery..."
 

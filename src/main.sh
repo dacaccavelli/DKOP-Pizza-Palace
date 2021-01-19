@@ -27,18 +27,13 @@ export temppizza="tmp/temp-pizza.txt"
 export customerinfo="tmp/cust-info.txt"
 
 date=$( date +"%x" | sed 's/\//\_/g'  )
-export receipt="receipts/$customername-$date-receipt.txt"
 
 export delivery=false
 order_finished=false
-first=true
+close_flag=false
+
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
-
-#-------------------------------------------
-#Testing
-
-
 
 #----------------------------------------------------------------
 # Section 1 : Setting up the following functions:
@@ -65,44 +60,33 @@ welcoming() {
 
 	# Welcoming the new customer
 
-	#echo  -e "\e[1;31m ---------------------------------------------------------- \e[0m"
 	echo " "
-        #echo -e "\x1b[31;42m                Welcome to DKOP Pizza Palace! Where dreams become reality! \x1b[m"
-	#echo -e "\e[1;31m ----------------------------------------------------------\e[0m"
-        #toilet -f bigmono9 -F gay DKOP PIZZA
         echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
-        echo ""
         echo ""
         toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay
         echo ""
-        echo ""
 
+	echo -en "\x1b[33m"
 	read -p "What is your first name? " customername
-	#echo -e "\e[1;35m Hello $customername. Thank you for coming to DKOP Pizza Palace! \e[0m"
 
-	# Initializing the table with column headers
-	echo " "
-        echo -e "\e[1;36m Size Crust-Type Toppings \e[0m" > $pizzafile
+	# Initializing the table with column header
+        echo -e "\e[1;36m Size Crust-Type Topping_Number Price Toppings \e[0m" > $pizzafile
 
-	# Preloading the order for testing
-	./src/crust.sh
-	#echo -e "\x1b[36mMedium regular 1 13.00 : Pepperoni" >> $pizzafile
-	#echo -e "\x1b[36mSmall thin 1 11.00 : Olives" >> $pizzafile
-	#echo -e "\x1b[36mXlarge thick 1 16.00 : Cheese" >> $pizzafile
-	#echo -e "\x1b[36mLarge stuffed 1 16.00 : Onions" >> $pizzafile
-
-	# Exporting the customername for the other files.
+	# Exporting the customername and receipt name for the other files.
 	export customername
+	export receipt="receipts/$customername-$date-receipt.txt"
+
+	# Starting the program by letting the user start to make a pizza.
+	./src/crust.sh
 }
 
 
 display-current-order() {
 # Function to read the file containing the current order
+# and print the pizzas that have been made.
 
-
-	if [ "$first" == "false" ]; then
+	if [ "$1" == "false" ]; then
 		echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
-		#echo -e "\e[1;32m |                                                        | \e[0m"
 		counter=0
 		while read line; do
 			if [[ "$counter" == '0' ]]; then
@@ -113,28 +97,29 @@ display-current-order() {
 			crust=$(echo $line | cut -f2 -d ' ')
 			tops=$(echo $line | cut -f3 -d ' ')
 			price=$(echo $line | cut -f4 -d ' ')
-			echo  -e "\x1b[36m$counter. $size, $tops topping $crust crust pizza		$price"
+			echo -en "\x1b[36m"
+			printf "%-45.45s %15s \n" "$counter. $size, $tops topping $crust crust pizza" "$price" 
 			(( counter++ ))
 		done < $pizzafile
 		if [[ "$counter" == '1' ]]; then
 			echo -e "\e[1;33m The order is currently empty \e[0m"
 		fi
-		#echo -e "\e[1;31m  \e[0m"
 		echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 	fi
 }
 
 header() {
 # Function that acts as a header for the other files
-	echo "----------------DKOP Pizza Palace --------------" | toilet -f term -F border --gay
-	display-current-order
+
+	echo "-------------------- DKOP Pizza Palace --------------------" | toilet -f term -F border --gay
+	display-current-order $1
 }
 
 order-and-options() {
 # Function to display the current order and the main options.
 
 	# Calls function to display running order.
-	header
+	header false
 
 	echo -e "\e[1;33m $customername, please select an option from the \e[0m"
 	echo -e "\e[1;33m list below by using the corresponding number: \e[0m"
@@ -143,6 +128,7 @@ order-and-options() {
 	echo -e "\e[1;36m To remove a pizza from the order, enter 2. \e[0m"
 	echo -e "\e[1;36m To see a detailed view of your order, enter 3. \e[0m"
 	echo -e "\e[1;36m To finish your order, enter 4. \e[0m"
+	echo -e "\e[1;36m To exit the program without placing an order, enter 5. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -152,14 +138,20 @@ remove-pizza() {
 	# Clears the CLI
 	clear
 	# Adds current order and option to remove a pizza
+	header false
 	echo -e "\e[1;33m ------------------ Removing a pizza ---------------------- \e[0m"
-	display-current-order
-	read -p "Choose pizza to remove (or select '0' to cancel):" choice
+	echo "Choose pizza to remove (enter '0' to see a detailed view of"
+	read -p "the pizzas or leave the line blank to cancel):" choice
 
 	# Removes the specific pizza from the file. Does nothing if '0'.
-	if [ "$choice" -ne '0' ]; then
-		((choice++))
-		sed -i -e "${choice}d" $pizzafile
+	if [ -n "$choice" ]; then
+		if [ "$choice" -ne '0' ]; then
+			((choice++))
+			sed -i -e "${choice}d" $pizzafile
+		else
+			./src/detailed-order.sh
+			remove-pizza
+		fi
 	fi
 }
 
@@ -170,27 +162,55 @@ delivery-or-carryout() {
 
 	#Clears and shows current order
 	clear
-	display-current-order
+	header false
 
-	# Prompts user to choose between delivery or carryout.
-	echo -e "\e[1;32m $customername, will your order be delivery or carryout? \e[0m"
-	echo -e "\e[1;31m ----------------------------------------------- \e[0m"
-	echo -e "\e[1;32m To choose delivery, enter 1. \e[0m"
-	echo -e "\e[1;32m To choose carryout, enter 2. \e[0m"
-	echo -e "\e[1;32m To return to the main menu, enter 0. \e[0m"
+	linecount=$(wc -l < $pizzafile | cut -f1 -d ' ')
+	if [ "$linecount" == "1" ]; then
+		echo -e "\e[1;32m Your order is currently empty. \e[0m"
+		read -p "Press any key to return to the main menu."
+	else
+		# Prompts user to choose between delivery or carryout.
+		echo -e "\e[1;32m $customername, will your order be delivery or carryout? \e[0m"
+		echo -e "\e[1;31m ----------------------------------------------- \e[0m"
+		echo -e "\e[1;32m To choose delivery, enter 1. \e[0m"
+		echo -e "\e[1;32m To choose carryout, enter 2. \e[0m"
+		echo -e "\e[1;32m To return to the main menu, enter 0. \e[0m"
 
-	read -p "Enter your choice..." choice
+		read -p "Enter your choice..." choice
 
-	# Switch betwen delivery form for user info or just pricing.
-	case $choice in
-		0) continue;;
-		1) delivery=true
-		   ./src/delivery.sh
-		   calculate-multiple-pizzas
-		   order_finished=true;;
-		2) calculate-multiple-pizzas
-		   order_finished=true;;
-	esac
+		# Switch betwen delivery form for user info or just pricing.
+		case $choice in
+			0) continue;;
+			1) delivery=true
+			   ./src/delivery.sh
+			   calculate-multiple-pizzas
+			   order_finished=true;;
+			2) calculate-multiple-pizzas
+			   order_finished=true;;
+		esac
+	fi
+}
+
+close-program() {
+# Function called when the user chooses to close the program
+# without placing an order.
+
+	header false
+        echo -en "\x1b[35m"
+        read -p "Are you sure you want to exit? (y/n): " choice
+
+        # Changes input to lowercase
+        choice=${choice,,}
+        case $choice in
+                "yes" | "y")    clear
+                                close_flag=true
+                                ;;
+                "no" | "n")     clear
+                                echo "Let's try again...";;
+                *)              clear
+                                echo "Sorry, I did not understand..."
+                                close-program;;
+        esac
 
 }
 
@@ -228,7 +248,7 @@ main() {
 			2) remove-pizza;;
 			3) ./src/detailed-order.sh;;
 			4) delivery-or-carryout;;
-			#4) echo "this will take you to delivery/checkout choice and pricing file";;
+			5) clear; close-program;;
 			esac
 		else
 			first=false
@@ -236,6 +256,7 @@ main() {
 		# Will need to have a way to check if the order has been finished
 		# (aka finished with Pushpa's file) to stop rerunning the main file.
 		[ "$order_finished" == "true" ] && break
+		[ "$close_flag" == "true" ] && break
 
 		# Adding the new pizza if all criteria for the pizza were met
 		# (size, crust, and toppings). Criteria is stored on two lines if 
@@ -259,7 +280,6 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
-			#read -p "$pizza_size $pizza_crust $pizza_toppings_count $pizza_toppings"
 			echo -e "\x1b[33m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
@@ -272,21 +292,25 @@ main() {
 	#----------------------------------------------------------------
 	# Section 4: Closing statements and cleanup of the created file.
 
-	if [ "$delivery" == "true" ]; then
-		address=$(sed '2q;d' $customerinfo)
-		phone=$(sed '3q;d' $customerinfo)
-		echo "Expect your delivery to $address to arrive within 30 minutes."
-		echo "If there are any issues, we will call you at $phone."
-	else
-		echo "Your order will be ready in approximately 20 minutes."
-		echo "We will see you soon!"
+	if [ "$close_flag" == "false" ]; then
+		echo ""
+		echo -e "\e[1;31m ------------------------------------------------- \e[0m"
+		echo ""
+
+		if [ "$delivery" == "true" ]; then
+			address=$(sed '2q;d' $customerinfo)
+			phone=$(sed '3q;d' $customerinfo)
+			echo -e "\x1b[32mExpect your delivery to $address to arrive within 30 minutes."
+			echo -e "\x1b[32mIf there are any issues, we will call you at $phone."
+		else
+			echo -e "\x1b[32mYour order will be ready in approximately 20 minutes."
+			echo -e "\x1b[32mWe will see you soon!"
+		fi
+		./src/receipt.sh
+		echo -e "\x1b[32mYou can find your receipt saved in at this file location: $receipt"
 	fi
-	./src/receipt.sh
-	echo -e "\x1b[32m You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
-	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
-	#echo -e "\e[1;33m Have a good day! Press any key to exit... \e[0m"
-        echo "Thank you for visiting DKOP Pizza Palace. Have a good day! Press any Key to exit" | toilet -f term -F border --gay 
+	echo "Thank you for visiting DKOP Pizza Palace. Have a good day! Press any Key to exit" | toilet -f term -F border --gay 
    	read
 }
 

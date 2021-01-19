@@ -92,24 +92,27 @@ calculate-multiple-pizzas() {
 	done < $pizzafile
 
 	# Displays the header from the main function
-	header
+	header false
 
-	echo " "
-	echo  -e "\e[1;32m The Subtotal will be: \$$subtotal \e[0m"
-	echo " "
+	echo -e "\e[1;32m"
+	#echo  -e "\e[1;32m The Subtotal will be:	 \$$subtotal \e[0m"
+	printf "The Subtotal will be: %5s$subtotal \n" "$"
 
 	# Calculates and round the tax to two decimal places.
 	tax=$( printf "%0.2f\n" $(echo "scale=2; $subtotal*0.053" | bc))
-	echo  -e "\e[1;32m The Tax will be: \$$tax \e[0m"
+	#echo  -e "\e[1;32m The Tax will be:	 \$$tax \e[0m"
+	printf "The Tax will be: %11s$tax \n" "$"
 
 	# Calculates the grand total from the subtotal and tax.
 	grand_total=$(echo "scale=2; $subtotal+$tax" | bc)
-	echo  -e "\e[1;32m The Grand Total will be: \$$grand_total \e[0m"
+	#echo  -e "\e[1;32m The Grand Total will be:	 \$$grand_total" #\e[0m"
+	printf "The Grand Total will be: %2s$grand_total \n" "$"
 
 	# Used to save the values to print on the receipt.
 	touch $temppizza
 	echo $subtotal >> $temppizza
 	echo $tax >> $temppizza
 	echo $grand_total >> $temppizza
-	read
+
+	read -p "Press any key to complete your order."
 }

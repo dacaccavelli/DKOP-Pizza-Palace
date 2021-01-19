@@ -15,7 +15,7 @@
 source ./src/main.sh --source-only
 
 # Initializing arrays for sizes and crusts.
-size_arr=( Small Medium Large X-Large)
+size_arr=( Small Medium Large XLarge)
 crust_arr=( Thin Regular Thick Stuffed)
 order_correct=false
 
@@ -55,7 +55,7 @@ crust_prompt() {
 
 	# Initial prompt with user instructions
 	#toilet -f term Please select a crust type from the list by using the corresponding number. --gay
-        echo -e "\x1b[33m Please select a size from the list by using the corresponding number."
+        echo -e "\x1b[33m Please select a crust type from the list by using the corresponding number."
         #echo "Enter zero (0) to return to the previous menu." | toilet -f term -F border --gay
 
 	# Displays the options for the crusts.
@@ -112,13 +112,13 @@ confirmation() {
 clear
 
 while :; do
-header
+	header false
 
-user_prompts
+	user_prompts
 
-confirmation
+	confirmation
 
-[ "$order_correct" == "true" ] && break
+	[ "$order_correct" == "true" ] && break
 
 done
 # Creating a file and storing the local variables in there
