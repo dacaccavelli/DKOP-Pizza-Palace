@@ -25,7 +25,7 @@ confirmation() {
 # Function to check if the selected toppings are correct.
 
 	printf -v joined '%s, ' "${selectedTopps[@]}"
-	echo -e "\x1b[35m You chose the following toppings: ${joined}"
+	echo -e "\x1b[35m You chose the following toppings: ${joined:0:-2}"
         read -p "Is this correct? (y/n): " choice
 
 	# Changes input to lowercase
@@ -46,7 +46,7 @@ confirmation() {
 
 
 order_correct=false
-pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumber "Red Pepper")
+pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumbers Peppers)
 
 while :; do
 
