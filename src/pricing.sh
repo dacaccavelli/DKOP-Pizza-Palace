@@ -113,5 +113,6 @@ calculate-multiple-pizzas() {
 	echo $subtotal >> $temppizza
 	echo $tax >> $temppizza
 	echo $grand_total >> $temppizza
+
 	read -p "Press any key to complete your order."
 }

@@ -31,13 +31,9 @@ date=$( date +"%x" | sed 's/\//\_/g'  )
 export delivery=false
 order_finished=false
 close_flag=false
+
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
-
-#-------------------------------------------
-#Testing
-
-
 
 #----------------------------------------------------------------
 # Section 1 : Setting up the following functions:
@@ -101,7 +97,6 @@ display-current-order() {
 			crust=$(echo $line | cut -f2 -d ' ')
 			tops=$(echo $line | cut -f3 -d ' ')
 			price=$(echo $line | cut -f4 -d ' ')
-			#echo  -e "\x1b[36m$counter. $size, $tops topping $crust crust pizza		$price"
 			echo -en "\x1b[36m"
 			printf "%-45.45s %15s \n" "$counter. $size, $tops topping $crust crust pizza" "$price" 
 			(( counter++ ))
@@ -216,7 +211,6 @@ close-program() {
                                 echo "Sorry, I did not understand..."
                                 close-program;;
         esac
-
 
 }
 

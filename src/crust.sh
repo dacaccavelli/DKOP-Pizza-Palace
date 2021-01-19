@@ -112,13 +112,13 @@ confirmation() {
 clear
 
 while :; do
-header false
+	header false
 
-user_prompts
+	user_prompts
 
-confirmation
+	confirmation
 
-[ "$order_correct" == "true" ] && break
+	[ "$order_correct" == "true" ] && break
 
 done
 # Creating a file and storing the local variables in there

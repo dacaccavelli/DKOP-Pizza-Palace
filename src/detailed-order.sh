@@ -31,7 +31,7 @@ display-details() {
         echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
 
 }
-clear
 
+clear
 display-details
 read -p "Press any key to return to the previous menu"
