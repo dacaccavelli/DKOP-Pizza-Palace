@@ -113,11 +113,11 @@ display-current-order() {
 			crust=$(echo $line | cut -f2 -d ' ')
 			tops=$(echo $line | cut -f3 -d ' ')
 			price=$(echo $line | cut -f4 -d ' ')
-			echo  -e "\x1b[35m$counter. $size, $tops topping $crust crust pizza		$price"
+			echo  -e "\x1b[36m$counter. $size, $tops topping $crust crust pizza		$price"
 			(( counter++ ))
 		done < $pizzafile
 		if [[ "$counter" == '1' ]]; then
-			echo -e "\e[1;31m The order is currently empty \e[0m"
+			echo -e "\e[1;33m The order is currently empty \e[0m"
 		fi
 		#echo -e "\e[1;31m  \e[0m"
 		echo -e "\e[1;32m ---------------------------------------------------------- \e[0m"
@@ -126,7 +126,7 @@ display-current-order() {
 
 header() {
 # Function that acts as a header for the other files
-	echo "----------------DKOP Pizza Palace --------------"
+	echo "----------------DKOP Pizza Palace --------------" | toilet -f term -F border --gay
 	display-current-order
 }
 
@@ -139,10 +139,10 @@ order-and-options() {
 	echo -e "\e[1;33m $customername, please select an option from the \e[0m"
 	echo -e "\e[1;33m list below by using the corresponding number: \e[0m"
 	echo -e "\e[1;32m ----------------------------------------------- \e[0m"
-	echo -e "\e[1;35m To order a new pizza, enter 1. \e[0m"
-	echo -e "\e[1;35m To remove a pizza from the order, enter 2. \e[0m"
-	echo -e "\e[1;35m To see a detailed view of your order, enter 3. \e[0m"
-	echo -e "\e[1;35m To finish your order, enter 4. \e[0m"
+	echo -e "\e[1;36m To order a new pizza, enter 1. \e[0m"
+	echo -e "\e[1;36m To remove a pizza from the order, enter 2. \e[0m"
+	echo -e "\e[1;36m To see a detailed view of your order, enter 3. \e[0m"
+	echo -e "\e[1;36m To finish your order, enter 4. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -152,7 +152,7 @@ remove-pizza() {
 	# Clears the CLI
 	clear
 	# Adds current order and option to remove a pizza
-	echo -e "\e[1;31m ------------------ Removing a pizza ---------------------- \e[0m"
+	echo -e "\e[1;33m ------------------ Removing a pizza ---------------------- \e[0m"
 	display-current-order
 	read -p "Choose pizza to remove (or select '0' to cancel):" choice
 
@@ -259,8 +259,8 @@ main() {
 			((pizza_line_count++))
 			pizza_price=$(sed "${pizza_line_count}q;d" $temppizza)
 
-			read -p "$pizza_size $pizza_crust $pizza_toppings_count $pizza_toppings"
-			echo -e "\x1b[36m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
+			#read -p "$pizza_size $pizza_crust $pizza_toppings_count $pizza_toppings"
+			echo -e "\x1b[33m$pizza_size $pizza_crust $pizza_toppings_count $pizza_price : $pizza_toppings" >> $pizzafile
 		fi
 
 		rm $temppizza
@@ -282,12 +282,11 @@ main() {
 		echo "We will see you soon!"
 	fi
 	./src/receipt.sh
-	echo "You can find your receipt saved in at this file location: $receipt"
+	echo -e "\x1b[32m You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
 	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
 	#echo -e "\e[1;33m Have a good day! Press any key to exit... \e[0m"
-        echo "Thank you for vising DKOP Pizza Palace
-               Have a good day! Press any Key to exit..." | toilet -f term -F border --gay 
+        echo "Thank you for visiting DKOP Pizza Palace. Have a good day! Press any Key to exit" | toilet -f term -F border --gay 
    	read
 }
 

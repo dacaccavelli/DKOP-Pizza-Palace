@@ -25,7 +25,7 @@ confirmation() {
 # Function to check if the selected toppings are correct.
 
 	printf -v joined '%s, ' "${selectedTopps[@]}"
-	echo "You chose the following toppings: ${joined}"
+	echo -e "\x1b[35m You chose the following toppings: ${joined}"
         read -p "Is this correct? (y/n): " choice
 
 	# Changes input to lowercase
@@ -59,9 +59,9 @@ while :; do
 
 	# Prints out the options
 	counter=1
-	echo -e "0.	No toppings"
+	echo -e "\x1b[36m0.	No toppings"
 	for t in "${pizzaToppings[@]}"; do
-		echo "$counter.	$t"
+		echo -e "\x1b[36m$counter.	$t"
 		((counter++))
 	done
 	echo ""
@@ -70,7 +70,7 @@ while :; do
 	dupe_flag=false
 	topp_arr=()
 
-	echo "Please enter the numbers for as many toppings as you would like, separated"
+	echo -e "\x1b[33m Please enter the numbers for as many toppings as you would like, separated"
 	read -p "by spaces (leave it blank to cancel the current pizza order): " selection
 	echo ""
 
