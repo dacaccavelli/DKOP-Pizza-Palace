@@ -30,6 +30,7 @@ date=$( date +"%x" | sed 's/\//\_/g'  )
 
 export delivery=false
 order_finished=false
+close_flag=false
 # sourcing functions from main.sh without actually running the file
 source ./src/pricing.sh --source-only
 
@@ -66,16 +67,14 @@ welcoming() {
 	echo " "
         echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
         echo ""
-        echo ""
         toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay
         echo ""
 
-	echo -e "\x1b[33m"
+	echo -en "\x1b[33m"
 	read -p "What is your first name? " customername
 
-	# Initializing the table with column headers
-	echo " "
-        echo -e "\e[1;36m Size Crust-Type Toppings \e[0m" > $pizzafile
+	# Initializing the table with column header
+        echo -e "\e[1;36m Size Crust-Type Topping_Number Price Toppings \e[0m" > $pizzafile
 
 	# Exporting the customername and receipt name for the other files.
 	export customername
@@ -117,7 +116,7 @@ display-current-order() {
 header() {
 # Function that acts as a header for the other files
 
-	echo "------------------- DKOP Pizza Palace -------------------" | toilet -f term -F border --gay
+	echo "-------------------- DKOP Pizza Palace --------------------" | toilet -f term -F border --gay
 	display-current-order $1
 }
 
@@ -134,6 +133,7 @@ order-and-options() {
 	echo -e "\e[1;36m To remove a pizza from the order, enter 2. \e[0m"
 	echo -e "\e[1;36m To see a detailed view of your order, enter 3. \e[0m"
 	echo -e "\e[1;36m To finish your order, enter 4. \e[0m"
+	echo -e "\e[1;36m To exit the program without placing an order, enter 5. \e[0m"
 	read -p "Enter your choice..." choice
 }
 
@@ -169,25 +169,54 @@ delivery-or-carryout() {
 	clear
 	header false
 
-	# Prompts user to choose between delivery or carryout.
-	echo -e "\e[1;32m $customername, will your order be delivery or carryout? \e[0m"
-	echo -e "\e[1;31m ----------------------------------------------- \e[0m"
-	echo -e "\e[1;32m To choose delivery, enter 1. \e[0m"
-	echo -e "\e[1;32m To choose carryout, enter 2. \e[0m"
-	echo -e "\e[1;32m To return to the main menu, enter 0. \e[0m"
+	linecount=$(wc -l < $pizzafile | cut -f1 -d ' ')
+	if [ "$linecount" == "1" ]; then
+		echo -e "\e[1;32m Your order is currently empty. \e[0m"
+		read -p "Press any key to return to the main menu."
+	else
+		# Prompts user to choose between delivery or carryout.
+		echo -e "\e[1;32m $customername, will your order be delivery or carryout? \e[0m"
+		echo -e "\e[1;31m ----------------------------------------------- \e[0m"
+		echo -e "\e[1;32m To choose delivery, enter 1. \e[0m"
+		echo -e "\e[1;32m To choose carryout, enter 2. \e[0m"
+		echo -e "\e[1;32m To return to the main menu, enter 0. \e[0m"
 
-	read -p "Enter your choice..." choice
+		read -p "Enter your choice..." choice
 
-	# Switch betwen delivery form for user info or just pricing.
-	case $choice in
-		0) continue;;
-		1) delivery=true
-		   ./src/delivery.sh
-		   calculate-multiple-pizzas
-		   order_finished=true;;
-		2) calculate-multiple-pizzas
-		   order_finished=true;;
-	esac
+		# Switch betwen delivery form for user info or just pricing.
+		case $choice in
+			0) continue;;
+			1) delivery=true
+			   ./src/delivery.sh
+			   calculate-multiple-pizzas
+			   order_finished=true;;
+			2) calculate-multiple-pizzas
+			   order_finished=true;;
+		esac
+	fi
+}
+
+close-program() {
+# Function called when the user chooses to close the program
+# without placing an order.
+
+	header false
+        echo -en "\x1b[35m"
+        read -p "Are you sure you want to exit? (y/n): " choice
+
+        # Changes input to lowercase
+        choice=${choice,,}
+        case $choice in
+                "yes" | "y")    clear
+                                close_flag=true
+                                ;;
+                "no" | "n")     clear
+                                echo "Let's try again...";;
+                *)              clear
+                                echo "Sorry, I did not understand..."
+                                close-program;;
+        esac
+
 
 }
 
@@ -225,7 +254,7 @@ main() {
 			2) remove-pizza;;
 			3) ./src/detailed-order.sh;;
 			4) delivery-or-carryout;;
-			#4) echo "this will take you to delivery/checkout choice and pricing file";;
+			5) clear; close-program;;
 			esac
 		else
 			first=false
@@ -233,6 +262,7 @@ main() {
 		# Will need to have a way to check if the order has been finished
 		# (aka finished with Pushpa's file) to stop rerunning the main file.
 		[ "$order_finished" == "true" ] && break
+		[ "$close_flag" == "true" ] && break
 
 		# Adding the new pizza if all criteria for the pizza were met
 		# (size, crust, and toppings). Criteria is stored on two lines if 
@@ -268,25 +298,25 @@ main() {
 	#----------------------------------------------------------------
 	# Section 4: Closing statements and cleanup of the created file.
 
-	echo ""
-	echo -e "\e[1;31m ------------------------------------------------- \e[0m"
-	echo ""
+	if [ "$close_flag" == "false" ]; then
+		echo ""
+		echo -e "\e[1;31m ------------------------------------------------- \e[0m"
+		echo ""
 
-	if [ "$delivery" == "true" ]; then
-		address=$(sed '2q;d' $customerinfo)
-		phone=$(sed '3q;d' $customerinfo)
-		echo "Expect your delivery to $address to arrive within 30 minutes."
-		echo "If there are any issues, we will call you at $phone."
-	else
-		echo "Your order will be ready in approximately 20 minutes."
-		echo "We will see you soon!"
+		if [ "$delivery" == "true" ]; then
+			address=$(sed '2q;d' $customerinfo)
+			phone=$(sed '3q;d' $customerinfo)
+			echo -e "\x1b[32mExpect your delivery to $address to arrive within 30 minutes."
+			echo -e "\x1b[32mIf there are any issues, we will call you at $phone."
+		else
+			echo -e "\x1b[32mYour order will be ready in approximately 20 minutes."
+			echo -e "\x1b[32mWe will see you soon!"
+		fi
+		./src/receipt.sh
+		echo -e "\x1b[32mYou can find your receipt saved in at this file location: $receipt"
 	fi
-	./src/receipt.sh
-	echo -e "\x1b[32m You can find your receipt saved in at this file location: $receipt"
 	rm -r tmp
-	#echo -e "\e[1;32m Thank you for visiting DKOP Pizza Palace \e[0m"
-	#echo -e "\e[1;33m Have a good day! Press any key to exit... \e[0m"
-        echo "Thank you for visiting DKOP Pizza Palace. Have a good day! Press any Key to exit" | toilet -f term -F border --gay 
+	echo "Thank you for visiting DKOP Pizza Palace. Have a good day! Press any Key to exit" | toilet -f term -F border --gay 
    	read
 }
 

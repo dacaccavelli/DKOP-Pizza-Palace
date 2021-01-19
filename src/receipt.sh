@@ -34,8 +34,7 @@ echo -e "\e[1;32m ----------------------- Current Order ------------------------
                         crust=$(echo $line | cut -f2 -d ' ')
                         tops=$(echo $line | cut -f3 -d ' ')
                         price=$(echo $line | cut -f4 -d ' ')
-			echo -en "\x1b[36m"
-                        printf "%-45.45s %19s \n" "$counter. $size, $tops topping $crust crust pizza" "$price" >> $receipt
+                        printf "\e[36m%-45.45s %19s \n" "$counter. $size, $tops topping $crust crust pizza" "$price" >> $receipt
                         (( counter++ ))
                 done < $pizzafile
                 if [[ "$counter" == '1' ]]; then
@@ -47,10 +46,10 @@ echo -e "\e[1;32m ----------------------- Current Order ------------------------
 subtotal=$(sed "1q;d" $temppizza)
 tax=$(sed "2q;d" $temppizza)
 grand=$(sed "3q;d" $temppizza)
-echo -en "\033[1;32m"
-printf "%60s \n" "Subtotal: $subtotal" >> $receipt
-printf "%60s \n" "Tax: $tax" >> $receipt
-printf "%60s \n" "Total: $grand" >> $receipt
+echo -en ""
+printf "\e[1;32m%60s \n\e[m" "Subtotal: $subtotal" >> $receipt
+printf "\e[1;32m%60s \n\e[m" "Tax: $tax" >> $receipt
+printf "\e[1;32m%60s \n\e[m" "Total: $grand" >> $receipt
 
 echo -e "\e[1;32m---------------------------------------------------------------" >> $receipt
 echo -e "\e[1;32m|               Thank you for ordering from us!               |" >> $receipt

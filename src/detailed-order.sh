@@ -8,7 +8,7 @@ source ./src/main.sh --source-only
 display-details() {
 # Displays the size, crust, list of toppings, and price for each pizza
 
-	echo "------------------- DKOP Pizza Palace -------------------" | toilet -f term -F border --gay
+	echo "-------------------- DKOP Pizza Palace --------------------" | toilet -f term -F border --gay
         echo -e "\e[1;32m ------------------- Current Order ------------------------ \e[0m"
         counter=0
         while read line; do
