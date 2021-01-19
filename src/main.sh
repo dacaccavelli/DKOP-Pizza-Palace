@@ -11,8 +11,6 @@
 #---------------------
 # Script Body
 
-#source ./src/receipt.sh
-
 # Initial clearing of terminal
 clear
 
@@ -58,16 +56,18 @@ source ./src/pricing.sh --source-only
 welcoming() {
 # Function to welcome the new customer and initialize the pizza file.
 
-	# Welcoming the new customer
+	while [ -z "$customername" ]; do
+		# Welcoming the new customer
+		clear
+		echo " "
+	        echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
+	        echo ""
+	        toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay
+	        echo ""
 
-	echo " "
-        echo -e "\x1b[32mDKOP PIZZA   PALACE" | toilet -F border --gay
-        echo ""
-        toilet -f term ......Welcome to DKOP Pizza Palace! Where dreams become reality !...... --gay
-        echo ""
-
-	echo -en "\x1b[33m"
-	read -p "What is your first name? " customername
+		echo -en "\x1b[33m"
+		read -p "What is your first name? " customername
+	done
 
 	# Initializing the table with column header
         echo -e "\e[1;36m Size Crust-Type Topping_Number Price Toppings \e[0m" > $pizzafile
@@ -223,7 +223,7 @@ main() {
 
 	# Only prompts on the initial run
 	if [ -z ${customername+x} ]; then
-	welcoming
+		welcoming
 	fi
 
 	#----------------------------------------------------------------
