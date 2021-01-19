@@ -1,93 +1,117 @@
 #!/bin/bash
 
-size_price=(1.00 2.00 3.00 4.00)
-crust=(0.50 1.00 2.00)
-GrandTotal=0
+# Variable initialization
+size_prices=(5.00 6.00 7.00 8.00)
+crust_prices=(5.00 6.00 7.00 8.00)
+price_per_topp=1
 
-pizzafile="running-order.txt"
+# Sourcing the main file to use the functions from within.
+#source ./src/main.sh --source-only
 
-#--------------------------------size-----------------
-calculate_single_pizza()
-{
+calculate-single-pizza() {
+# Function to calculate the price of a single pizza.
 
-if [[ "$sz" == "Small" ]]; then
- pizza_size_price=${size_price[0]}
+	# Variable initialization
+	total=0
+	size=$1
+	crust=$2
+	topp_count=$3
 
-elif [[ "$sz" == "Medium" ]]; then
-pizza_size_price=${size_price[1]}
+	# Changing variables to lowercase
+	size=${size,,}
+	crust=${crust,,}
 
-elif [[ "$sz" == "Large" ]]; then
-pizza_size_price=${size_price[2]}
+	# Big conditional to select price based on the
+	# size of the pizza.
+	if [[ "$size" == "small" ]]; then
+		pizza_size_price=${size_prices[0]}
+	elif [[ "$size" == "medium" ]]; then
+		pizza_size_price=${size_prices[1]}
+	elif [[ "$size" == "large" ]]; then
+		pizza_size_price=${size_prices[2]}
+	elif [[ "$size" == "xlarge" ]]; then
+		pizza_size_price=${size_prices[3]}
+	fi
 
-elif
- [[ "$sz" == "Xlarge" ]]; then
-pizza_size_price=${size_price[3]}
+	#--------------------------crust price---------------
 
-fi
-echo "$pizza_size_price"
-#--------------------------toppings price------------
-if [[ "$tps" == "pepperoni" ]]; then
-tp=1.00
+	# Big conditional to select price based on the
+	# crust of the pizza.
+	if [[ "$crust" == "thin" ]]; then
+		crust_price=${crust_prices[0]}
+	elif [[ "$crust" == "regular" ]]; then
+		crust_price=${crust_prices[1]}
+	elif [[ "$crust" == "thick" ]]; then
+		crust_price=${crust_prices[2]}
+	elif [[ "$crust" == "stuffed" ]]; then
+		crust_price=${crust_prices[3]}
+	fi
 
-elif [[ "$tps" == "olives" ]]; then
-tp=1.00
+	# Calculating the price of the toppings.
+	topp_price=$(( $topp_count * $price_per_topp ))
 
-elif [[ "$tps" == "onions" ]]; then
-tp=1.00
+	# Calculating the total price.
+	total=$(echo "scale=2; $pizza_size_price+$topp_price+$crust_price-0.01" | bc)
 
-fi
-echo "$tp"
-#--------------------------crust price---------------
-
-if [[ "$crt" == "regular" ]]; then
-crust_price=${crust[0]}
-
-elif [[ "$crt" == "thin" ]]; then
-crust_price=${crust[1]}
-
-elif [[ "$crt" == "stuffed" ]]; then
-crust_price=${crust[2]}
-fi
-echo "$crust_price"
-total=$(echo "scale=2; $pizza_size_price+$tp+$crust_price" | bc)
-GrandTotal=$(echo "scale=2; $GrandTotal+$total" | bc)
-echo " "
-echo  -e "\e[1;32m The total will be: $total \e[0m"
-
-echo " "
+	# Storing variable if called as single pizza calculation
+	# Will not run with call from calculate-multiple-pizzas
+	if [ -f "$temppizza" ]; then
+	        echo $total >> $temppizza
+	fi
 }
 
 
-calculate_mupltiple_pizza()
-{
-counter=0
-while read line; do
-          if [[ "$counter" == '0' ]]; then
-            (( counter ++))
-             continue
-          fi
-           sz=$(echo $line | cut -f1 -d ' ')
-           crt=$(echo $line | cut -f2 -d ' ')
-           tps=$(echo $line | cut -f3 -d ' ')
-echo "$sz $crt $tps "
+calculate-multiple-pizzas() {
+# Calculates final order totals from the list of
+# all pizzas.
 
-calculate_single_pizza
+	# Variable initialization
+	subtotal=0
+	counter=0
 
-(( counter++ ))
-done < $pizzafile
+	clear
 
+	# Loop for reading the inportant information
+	# from each pizza.
+	while read line; do
+		if [[ "$counter" == '0' ]]; then
+			(( counter ++))
+			continue
+		fi
+		sz=$(echo $line | cut -f1 -d ' ')
+		crt=$(echo $line | cut -f2 -d ' ')
+		tps=$(echo $line | cut -f3 -d ' ')
+
+		# Recalculates the price of each pizza without
+		# appending them to the temppizza file
+		calculate-single-pizza $sz $crt $tps
+
+		# Add the calculated total to the running subtotal.
+		subtotal=$(echo "scale=2; $subtotal+$total" | bc)
+		(( counter++ ))
+	done < $pizzafile
+
+	# Displays the header from the main function
+	header false
+
+	echo -e "\e[1;32m"
+	#echo  -e "\e[1;32m The Subtotal will be:	 \$$subtotal \e[0m"
+	printf "The Subtotal will be: %5s$subtotal \n" "$"
+
+	# Calculates and round the tax to two decimal places.
+	tax=$( printf "%0.2f\n" $(echo "scale=2; $subtotal*0.053" | bc))
+	#echo  -e "\e[1;32m The Tax will be:	 \$$tax \e[0m"
+	printf "The Tax will be: %11s$tax \n" "$"
+
+	# Calculates the grand total from the subtotal and tax.
+	grand_total=$(echo "scale=2; $subtotal+$tax" | bc)
+	#echo  -e "\e[1;32m The Grand Total will be:	 \$$grand_total" #\e[0m"
+	printf "The Grand Total will be: %2s$grand_total \n" "$"
+
+	# Used to save the values to print on the receipt.
+	touch $temppizza
+	echo $subtotal >> $temppizza
+	echo $tax >> $temppizza
+	echo $grand_total >> $temppizza
+	read -p "Press any key to complete your order."
 }
-calculate_mupltiple_pizza
-
-Tax=$(echo "scale=2; ($total*0.025)" | bc)
-echo  -e "\e[1;32m The Tax will be: $Tax \e[0m"
-echo  -e "\e[1;32m The Grand Total will be: $GrandTotal \e[0m"
-
-
-
-
-
-
-
-
-
