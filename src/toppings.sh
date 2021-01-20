@@ -1,7 +1,16 @@
 #!/bin/bash
-#Pizza Project
-# 12/29/2020
-# Omer Bayrakdar
+
+#-----------------------------------------------
+# Author: Omer Bayrakdar
+# Date: 12/29/2020
+
+# Description: The purpose of this script is to
+# allow the users to select as many toppings
+# as they want for their pizza and save that
+# information for use in main.sh.
+
+#-----------------------------------------------
+# Script Body
 
 # sourcing functions from main.sh without actually running the file
 source ./src/main.sh --source-only

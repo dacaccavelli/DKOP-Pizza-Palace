@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#----------------------------------------------------
+# Author: Daniel Caccavelli
+# Date: 1/19/2021
+
+# Description: The purpose of this script is to
+# gather the user's information needed for delivery.
+
+#----------------------------------------------------
+# Script Body
+
 # sourcing functions from main.sh without actually running the file
 source ./src/main.sh --source-only
 
