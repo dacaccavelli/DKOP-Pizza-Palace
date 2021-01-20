@@ -35,7 +35,7 @@ confirmation() {
 	echo -e "\x1b[35m Address: $address"
 	echo -e "\x1b[35m Phone number: $phone"
 	read -p "Is the above information correct? (y/n)  " choice
-	choice=$(choice,,)
+	choice=${choice,,}
 
 	case $choice in
 	"yes" | "y") 	echo "Great! Thank you!"
