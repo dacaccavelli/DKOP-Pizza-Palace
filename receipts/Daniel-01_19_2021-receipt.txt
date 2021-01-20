@@ -2,15 +2,14 @@
 [1;32m|                      DKOP-Pizza-Palace                      |
 [1;32m|                       191 Fayette St.                       |
 [1;32m|                   Martinsville, VA 24112                    |
-[1;32m|                  01/19/2021 at 04:28:43 PM                  |
+[1;32m|                  01/19/2021 at 11:03:54 PM                  |
 ---------------------------------------------------------------
 [1;32m ----------------------- Current Order ------------------------ [0m
-[36m1. [33mMedium, 3 topping Regular crust pizza               14.99 
-[36m2. [33mLarge, 3 topping Regular crust pizza                15.99 
+[36m1. [33mMedium, 0 topping thick crust pizza                 12.99 
 [1;32m -------------------------------------------------------------- [0m
-[1;32m                                             Subtotal: 30.98 
-[m[1;32m                                                   Tax: 1.64 
-[m[1;32m                                                Total: 32.62 
+[1;32m                                             Subtotal: 12.99 
+[m[1;32m                                                   Tax: 0.69 
+[m[1;32m                                                Total: 13.68 
 [m[1;32m---------------------------------------------------------------
 [1;32m|               Thank you for ordering from us!               |
 [1;32m|                We hope to see you again soon!               |

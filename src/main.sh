@@ -408,7 +408,8 @@ main() {
 		# Then lets the user know where they can find
 		# the receipt.
 		./src/receipt.sh
-		echo -e "\x1b[32mYou can find your receipt saved in at this file location: $receipt"
+		echo -e "\x1b[32mYou can find your receipt saved in at this file location:"
+		echo -e "\x1b[32m$receipt"
 	fi
 
 	# Final cleanup of the temporary files and closing remark
