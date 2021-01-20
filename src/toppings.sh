@@ -73,12 +73,12 @@ confirmation() {
 # Initialization of variables
 # order_correct is the flag used to determine when the
 #	the selected toppings are correct.
-# pizzaToppings is the array which holds all avaialable
+# pizzaToppings is the array which holds all available
 #	toppings.
 order_correct=false
 pizzaToppings=("Extra Cheese" Pepperoni Sausage Tomatoes Onion Mushroom Jalapeno Olives Cucumbers Peppers)
 
-# Main loop of the function - syntax means it is always tru.
+# Main loop of the function - syntax means it is always true.
 while :; do
 
 	# Sourced header function from main.sh runs.
