@@ -1,1 +1,2 @@
 [1;36m Size Crust-Type Topping_Number Price Toppings [0m
+[33mMedium Regular 3 14.99 : Extra Cheese, Pepperoni, Sausage
