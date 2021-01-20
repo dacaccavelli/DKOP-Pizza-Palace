@@ -1,6 +1,6 @@
 # DKOP-Pizza-Palace
 
-Description: The purpose of this project is to create a pizza place in Linux.
+The purpose of this project is to create a pizza place in Linux.
   Customers are able to:
       1. Decide pizza size,
       2. Decide pizza crust type,
